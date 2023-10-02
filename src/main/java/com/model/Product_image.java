@@ -23,6 +23,41 @@ public class Product_image  {
     @JoinColumn(name = "product_id")
     private Product product;
 
+	public int getImage_id() {
+		return image_id;
+	}
+
+	public void setImage_id(int image_id) {
+		this.image_id = image_id;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public Product_image(int image_id, String imageUrl, Product product) {
+		super();
+		this.image_id = image_id;
+		this.imageUrl = imageUrl;
+		this.product = product;
+	}
+
+	public Product_image() {
+		super();
+	}
+
 
     
     

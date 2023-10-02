@@ -11,21 +11,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.model.Product;
 import com.repository.ProductRepository;
 
-
-
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/pharmacy-online/")
-public class ProductController {
-	
+public class ProductImageController {
+
 	@Autowired
 	private ProductRepository productRepository;
+
 	@GetMapping("/products")
-	public List<Product> getAllProducts(){
+	public List<Product> getAllProducts() {
 		return productRepository.findAll();
+
 	}
-	
-	
-	
-	
+
 }
