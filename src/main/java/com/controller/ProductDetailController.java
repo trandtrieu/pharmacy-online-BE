@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.ProductDetailDTO;
+import com.exception.ResourceNotFoundException;
 import com.model.Product;
 import com.model.Product_detail;
 import com.model.Product_image;
@@ -29,6 +32,8 @@ public class ProductDetailController {
     @Autowired
     private ProductImageRepository productImageRepository;
     
+    
+    //show list product but with product and product_detail(without product_image)
     @GetMapping("/products/abc")
     public List<ProductDetailDTO> getAllProductDetails() {
         List<Product_detail> productDetails = productDetailRepository.findAll();
@@ -59,8 +64,8 @@ public class ProductDetailController {
         return productDetailDTOs;
     }
     
-    @GetMapping("/products/image")
-
+    //show list product 
+    @GetMapping("/products/list")
     public List<ProductDetailDTO> getAllProductsWithDetailsAndImages() {
         List<ProductDetailDTO> productDTOs = new ArrayList<>();
 
@@ -99,6 +104,45 @@ public class ProductDetailController {
 
         return productDTOs;
     }
+    
+    
+    @GetMapping("/products/{productId}")
+    public ResponseEntity<ProductDetailDTO> getProductDetailsById(@PathVariable Integer productId) {
+        Product product = productRepository.findById(productId).orElse(null);
+        
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        ProductDetailDTO productDTO = new ProductDetailDTO();
+        productDTO.setProductId(product.getProduct_id());
+        productDTO.setBrand(product.getP_brand());
+        productDTO.setName(product.getP_name());
+        productDTO.setPrice(product.getP_price());
+        productDTO.setStatus(product.getP_status());
+
+        Product_detail productDetail = productDetailRepository.findByProduct(product);
+        if (productDetail != null) {
+            productDTO.setComponent(productDetail.getP_component());
+            productDTO.setGuide(productDetail.getP_guide());
+            productDTO.setInstruction(productDetail.getP_instruction());
+            productDTO.setMadeIn(productDetail.getP_madeIn());
+            productDTO.setObject(productDetail.getP_object());
+            productDTO.setPreservation(productDetail.getP_preservation());
+            productDTO.setStore(productDetail.getP_store());
+            productDTO.setVirtue(productDetail.getP_vitue());
+        }
+
+        List<Product_image> productImages = productImageRepository.findByProduct(product);
+        List<String> imageUrls = new ArrayList<>();
+        for (Product_image productImage : productImages) {
+            imageUrls.add(productImage.getImageUrl());
+        }
+        productDTO.setImageUrls(imageUrls);
+
+        return ResponseEntity.ok(productDTO);
+    }
+
     
     
     
