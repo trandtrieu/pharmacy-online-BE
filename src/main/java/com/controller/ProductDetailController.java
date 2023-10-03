@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.ProductDetailDTO;
+import com.exception.ResourceNotFoundException;
 import com.model.Product;
 import com.model.Product_detail;
 import com.model.Product_image;
@@ -99,6 +102,53 @@ public class ProductDetailController {
 
         return productDTOs;
     }
+    
+    
+	// get product by id rest api
+    public ProductDetailDTO getProductDetailById(PathVariable Integer productId ) {
+        ProductDetailDTO productDTO = new ProductDetailDTO();
+
+        // Tìm sản phẩm theo ID
+        Product product = productRepository.findById(productId);
+
+        if (product != null) {
+            Product_detail productDetail = productDetailRepository.findByProduct(product);
+            List<Product_image> productImages = productImageRepository.findByProduct(product);
+
+            productDTO.setProductId(product.getProduct_id());
+            productDTO.setBrand(product.getP_brand());
+            productDTO.setName(product.getP_name());
+            productDTO.setPrice(product.getP_price());
+            productDTO.setStatus(product.getP_status());
+            // productDTO.setCategory_id(product.get_());
+
+            if (productDetail != null) {
+                productDTO.setComponent(productDetail.getP_component());
+                productDTO.setGuide(productDetail.getP_guide());
+                productDTO.setInstruction(productDetail.getP_instruction());
+                productDTO.setMadeIn(productDetail.getP_madeIn());
+                productDTO.setObject(productDetail.getP_object());
+                productDTO.setPreservation(productDetail.getP_preservation());
+                productDTO.setStore(productDetail.getP_store());
+                productDTO.setVirtue(productDetail.getP_vitue());
+            }
+
+            List<String> imageUrls = new ArrayList<>();
+            for (Product_image productImage : productImages) {
+                imageUrls.add(productImage.getImageUrl());
+            }
+            productDTO.setImageUrls(imageUrls);
+        }
+
+        return productDTO;
+    }
+
+
+
+
+
+
+
     
     
     
