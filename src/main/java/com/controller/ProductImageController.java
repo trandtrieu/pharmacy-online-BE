@@ -19,7 +19,7 @@ public class ProductImageController {
 	@Autowired
 	private ProductRepository productRepository;
 
-	@GetMapping("/products")
+	@GetMapping("/products/123")
 	public List<Product> getAllProducts() {
 		return productRepository.findAll();
 
