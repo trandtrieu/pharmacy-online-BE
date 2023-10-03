@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.ProductDetailDTO;
-import com.exception.ResourceNotFoundException;
 import com.model.Product;
 import com.model.Product_detail;
 import com.model.Product_image;
@@ -65,7 +64,7 @@ public class ProductDetailController {
     }
     
     //show list product 
-    @GetMapping("/products/list")
+    @GetMapping("/products")
     public List<ProductDetailDTO> getAllProductsWithDetailsAndImages() {
         List<ProductDetailDTO> productDTOs = new ArrayList<>();
 
