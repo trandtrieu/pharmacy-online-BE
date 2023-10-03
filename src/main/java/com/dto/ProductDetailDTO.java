@@ -1,6 +1,7 @@
 package com.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class ProductDetailDTO {
     private int productId;
@@ -17,6 +18,7 @@ public class ProductDetailDTO {
     private String preservation;
     private String store;
     private String virtue;
+    private List<String> imageUrls;
 	public int getProductId() {
 		return productId;
 	}
@@ -101,6 +103,13 @@ public class ProductDetailDTO {
 	public void setVirtue(String virtue) {
 		this.virtue = virtue;
 	}
+	public List<String> getImageUrls() {
+		return imageUrls;
+	}
+	public void setImageUrls(List<String> imageUrls) {
+		this.imageUrls = imageUrls;
+	}
+
     
     
 }
