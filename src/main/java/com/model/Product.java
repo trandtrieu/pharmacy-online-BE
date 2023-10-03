@@ -29,7 +29,7 @@ public class Product {
 	private String p_brand;
 	@Column
 	private int p_status;
-
+	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	private Category category;
@@ -39,6 +39,18 @@ public class Product {
 
 	public Product() {
 		super();
+	}
+
+	public Product(int product_id, String p_name, BigDecimal p_price, String p_brand, int p_status, Category category,
+			List<Product_image> images) {
+		super();
+		this.product_id = product_id;
+		this.p_name = p_name;
+		this.p_price = p_price;
+		this.p_brand = p_brand;
+		this.p_status = p_status;
+		this.category = category;
+		this.images = images;
 	}
 
 	public int getProduct_id() {
@@ -79,6 +91,22 @@ public class Product {
 
 	public void setP_status(int p_status) {
 		this.p_status = p_status;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public List<Product_image> getImages() {
+		return images;
+	}
+
+	public void setImages(List<Product_image> images) {
+		this.images = images;
 	}
 
 }

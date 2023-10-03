@@ -26,4 +26,10 @@ public class Category {
 	
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
+
+	public Category() {
+		super();
+	}
+	
+	
 }
