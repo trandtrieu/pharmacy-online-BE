@@ -105,6 +105,9 @@ public class ProductDetailController {
     }
     
     
+
+
+
     @GetMapping("/products/{productId}")
     public ResponseEntity<ProductDetailDTO> getProductDetailsById(@PathVariable Integer productId) {
         Product product = productRepository.findById(productId).orElse(null);
@@ -141,4 +144,14 @@ public class ProductDetailController {
 
         return ResponseEntity.ok(productDTO);
     }
+<<<<<<< HEAD
+=======
+
+
+    
+    
+    
+    
+    
+>>>>>>> 3e3be8a27ae392778cb2279ad00156e79cda55e9
 }
