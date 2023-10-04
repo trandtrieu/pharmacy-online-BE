@@ -141,10 +141,4 @@ public class ProductDetailController {
 
         return ResponseEntity.ok(productDTO);
     }
-
-    
-    
-    
-    
-    
 }
