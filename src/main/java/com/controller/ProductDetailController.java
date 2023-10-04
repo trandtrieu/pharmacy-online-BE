@@ -144,14 +144,5 @@ public class ProductDetailController {
 
         return ResponseEntity.ok(productDTO);
     }
-<<<<<<< HEAD
-=======
 
-
-    
-    
-    
-    
-    
->>>>>>> 3e3be8a27ae392778cb2279ad00156e79cda55e9
 }
