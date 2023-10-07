@@ -15,7 +15,6 @@ import com.model.Product;
 import com.model.WishList;
 import com.repository.AccountRepository;
 import com.repository.ProductRepository;
-import com.repository.WishListRepository;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -27,8 +26,7 @@ public class WishListController {
 
 	@Autowired
 	private AccountRepository accountRepository;
-	@Autowired
-	private WishListRepository wishListRepository;
+
 
   
 	  

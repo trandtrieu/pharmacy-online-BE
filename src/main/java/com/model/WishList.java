@@ -63,6 +63,15 @@ public class WishList {
     }
 
 
+	public WishList(int id, Date createdDate, Account account, Set<Product> products) {
+		super();
+		this.id = id;
+		this.createdDate = createdDate;
+		this.account = account;
+		this.products = products;
+	}
+
+
 	public int getId() {
 		return id;
 	}
