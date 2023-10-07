@@ -1,48 +1,66 @@
 package com.model;
 
+
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-@Entity
-@Table(name="wishlist")
-public class WishList {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
 
-    @OneToOne(targetEntity = Account.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "id")
-    private Account account;
+@Entity
+@Table(name = "wishlist")
+public class WishList {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+
 
     @Column(name = "created_date")
     private Date createdDate;
 
-    @ManyToOne()
-    @JoinColumn(name = "product_id")
-    private Product product;
 
-	public WishList(int id, Account account, Date createdDate, Product product) {
-		super();
-		this.id = id;
-		this.account = account;
-		this.createdDate = createdDate;
-		this.product = product;
-	}
-	
+    
+    @OneToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 
-	public WishList() {
-		super();
-	}
+    @ManyToMany
+    @JoinTable(
+        name = "wishlist_product",
+        joinColumns = @JoinColumn(name = "wishlist_id"),
+        inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private Set<Product> products = new HashSet<>();
+   
+
+
+    public void addProduct(Product product) {
+        products.add(product);
+        product.getWishLists().add(this);
+    }
+    
+
+    public void removeProduct(Product product) {
+        products.remove(product);
+        product.getWishLists().remove(this);
+    }
+    
+    
+    public WishList() {}
+
+    public WishList(Account account) {
+        this.account = account;
+    }
 
 
 	public int getId() {
@@ -69,13 +87,13 @@ public class WishList {
 		this.createdDate = createdDate;
 	}
 
-	public Product getProduct() {
-		return product;
+	public Set<Product> getProducts() {
+		return products;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setProducts(Set<Product> products) {
+		this.products = products;
 	}
-
-	
+    
+    
 }

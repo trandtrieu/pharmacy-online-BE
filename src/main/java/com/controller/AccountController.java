@@ -8,20 +8,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.model.Product;
-import com.repository.ProductRepository;
+import com.model.Account;
+import com.repository.AccountRepository;
+
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/pharmacy-online/")
-public class ProductController {
-
+public class AccountController {
 	@Autowired
-	private ProductRepository productRepository;
+	private AccountRepository accountRepository;
 
-	@GetMapping("/products/test")
-	public List<Product> getAllProducts() {
-		return productRepository.findAll();
+	@GetMapping("/accounts/list")
+	public List<Account> getAllAccounts() {
+		return accountRepository.findAll();
 	}
-
 }

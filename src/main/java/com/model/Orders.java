@@ -9,6 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "orders")
@@ -33,17 +36,18 @@ public class Orders {
 	@JoinColumn(name = "u_id", referencedColumnName = "id")
 	private Account account;
 
-	public Orders() {
-		super();
-	}
-
-	public Orders(int id, String o_totalPrice, String o_address, String o_note, int ship_id) {
+	public Orders(int id, String o_totalPrice, String o_address, String o_note, int ship_id, Account account) {
 		super();
 		this.id = id;
 		this.o_totalPrice = o_totalPrice;
 		this.o_address = o_address;
 		this.o_note = o_note;
 		this.ship_id = ship_id;
+		this.account = account;
+	}
+
+	public Orders() {
+		super();
 	}
 
 	public int getId() {
@@ -84,6 +88,14 @@ public class Orders {
 
 	public void setShip_id(int ship_id) {
 		this.ship_id = ship_id;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 }

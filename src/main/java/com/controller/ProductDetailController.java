@@ -32,37 +32,6 @@ public class ProductDetailController {
     private ProductImageRepository productImageRepository;
     
     
-    //show list product but with product and product_detail(without product_image)
-    @GetMapping("/products/abc")
-    public List<ProductDetailDTO> getAllProductDetails() {
-        List<Product_detail> productDetails = productDetailRepository.findAll();
-
-        List<ProductDetailDTO> productDetailDTOs = new ArrayList<>();
-        
-        for (Product_detail detail : productDetails) {
-            Product product = productRepository.findById(detail.getProduct().getProduct_id()).orElse(null);
-            if (product != null) {
-                ProductDetailDTO dto = new ProductDetailDTO();
-                dto.setProductId(product.getProduct_id());
-                dto.setBrand(product.getP_brand());
-                dto.setName(product.getP_name());
-                dto.setPrice(product.getP_price());
-                dto.setStatus(product.getP_status());
-                dto.setComponent(detail.getP_component());
-                dto.setGuide(detail.getP_guide());
-                dto.setInstruction(detail.getP_instruction());
-                dto.setMadeIn(detail.getP_madeIn());
-                dto.setObject(detail.getP_object());
-                dto.setPreservation(detail.getP_preservation());
-                dto.setStore(detail.getP_store());
-                dto.setVirtue(detail.getP_vitue());
-                productDetailDTOs.add(dto);
-            }
-        }
-
-        return productDetailDTOs;
-    }
-    
     //show list product 
     @GetMapping("/products")
     public List<ProductDetailDTO> getAllProductsWithDetailsAndImages() {
@@ -79,7 +48,10 @@ public class ProductDetailController {
             productDTO.setName(product.getP_name());
             productDTO.setPrice(product.getP_price());
             productDTO.setStatus(product.getP_status());
-//            productDTO.setCategory_id(product.get_());
+
+            productDTO.setCategory_id(product.getCategory().getCategory_id());
+            String categoryName = product.getCategory().getCategory_name();
+            productDTO.setCategory_name(categoryName);
 
             if (productDetail != null) {
                 productDTO.setComponent(productDetail.getP_component());
@@ -122,7 +94,9 @@ public class ProductDetailController {
         productDTO.setName(product.getP_name());
         productDTO.setPrice(product.getP_price());
         productDTO.setStatus(product.getP_status());
-
+        productDTO.setCategory_id(product.getCategory().getCategory_id());
+        String categoryName = product.getCategory().getCategory_name();
+        productDTO.setCategory_name(categoryName);
         Product_detail productDetail = productDetailRepository.findByProduct(product);
         if (productDetail != null) {
             productDTO.setComponent(productDetail.getP_component());

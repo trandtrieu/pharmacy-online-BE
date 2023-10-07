@@ -8,56 +8,69 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
+
 @Entity
-@Table(name ="product_detail")
+@Table(name = "product_detail")
 public class Product_detail {
-	
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int detail_id;
-	
-	
+
 	@Column
 	private String p_component;
-	
+
 	@Column
 	private String p_vitue;
-	
+
 	@Column
 	private String p_object;
-	
+
 	@Column
 	private String p_guide;
-	
+
 	@Column
 	private String p_preservation;
-		
+
 	@Column
 	private String p_instruction;
-	
-	@Column 
+
+	@Column
 	private String p_store;
-	
-	@Column 
+
+	@Column
 	private String p_madeIn;
 
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-	
-	
+	@OneToOne
+	@JoinColumn(name = "product_id")
+	private Product product;
+
+	public Product_detail(int detail_id, String p_component, String p_vitue, String p_object, String p_guide,
+			String p_preservation, String p_instruction, String p_store, String p_madeIn, Product product) {
+		super();
+		this.detail_id = detail_id;
+		this.p_component = p_component;
+		this.p_vitue = p_vitue;
+		this.p_object = p_object;
+		this.p_guide = p_guide;
+		this.p_preservation = p_preservation;
+		this.p_instruction = p_instruction;
+		this.p_store = p_store;
+		this.p_madeIn = p_madeIn;
+		this.product = product;
+	}
+
 	public Product_detail() {
 		super();
 	}
 
-
-
-	public Product getProduct() {
-		return product;
+	public int getDetail_id() {
+		return detail_id;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setDetail_id(int detail_id) {
+		this.detail_id = detail_id;
 	}
 
 	public String getP_component() {
@@ -123,9 +136,15 @@ public class Product_detail {
 	public void setP_madeIn(String p_madeIn) {
 		this.p_madeIn = p_madeIn;
 	}
-	
 
-	
-	
-	
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+
+
 }
