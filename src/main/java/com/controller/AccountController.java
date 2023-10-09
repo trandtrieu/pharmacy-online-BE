@@ -33,39 +33,28 @@ public class AccountController {
 		}).collect(Collectors.toList());
 		return accountDTOs;
 	}
-
-	@GetMapping("/accounts4")
-	public List<AccountDTO> getAllAccounts4() {
-		List<Account> accounts = accountRepository.findAll();
-		List<AccountDTO> accountDTOs = accounts.stream().map(account -> {
-			AccountDTO accountDTO = new AccountDTO(account.getId(), account.getName(), account.getMail(),
-					account.getPassword(), account.getAddress(), account.getDob(), account.getAvatar(),
-					account.getPhone(), account.getRole(), account.getContents());
-
-			if (account.getWishList() != null) {
-				accountDTO.setWishList(account.getWishList());
-			}
-
-			return accountDTO;
-		}).collect(Collectors.toList());
-		return accountDTOs;
-	}
-
+	
+	
 	@GetMapping("/accounts2")
 	public List<AccountDTO> getAllAccounts2() {
-		List<Account> accounts = accountRepository.findAll();
-		List<AccountDTO> accountDTOs = accounts.stream().map(account -> {
-			return new AccountDTO(account.getId(), account.getName(), account.getMail(), account.getPassword(),
-					account.getAddress(), account.getDob(), account.getAvatar(), account.getPhone(), account.getRole(),
-					account.getContents(), account.getWishList()
+	    List<Account> accounts = accountRepository.findAll();
+	    List<AccountDTO> accountDTOs = accounts.stream().map(account -> {
+	        AccountDTO accountDTO = new AccountDTO();
+	        accountDTO.setId(account.getId());
+	        accountDTO.setName(account.getName());
+	        accountDTO.setMail(account.getMail());
+	        accountDTO.setPassword(account.getPassword());
+	        accountDTO.setAddress(account.getAddress());
+	        accountDTO.setDob(account.getDob());
+	        accountDTO.setAvatar(account.getAvatar());
+	        accountDTO.setPhone(account.getPhone());
+	        accountDTO.setRole(account.getRole());
+	        accountDTO.setContents(account.getContents());
+	        accountDTO.setWishList(account.getWishList()); // Include the WishList
 
-			);
-		}).collect(Collectors.toList());
-		return accountDTOs;
+	        return accountDTO;
+	    }).collect(Collectors.toList());
+	    return accountDTOs;
 	}
 
-	@GetMapping("/accounts3")
-	public List<Account> getAllAccounts3() {
-		return accountRepository.findAll();
-	}
 }

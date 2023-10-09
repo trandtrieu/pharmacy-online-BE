@@ -33,7 +33,8 @@ public class WishList {
     @OneToOne
     @JoinColumn(name = "account_id")
     private Account account;
-
+    
+    
     @ManyToMany
     @JoinTable(
         name = "wishlist_product",

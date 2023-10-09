@@ -5,11 +5,13 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
 @Getter
 @Setter
+@NoArgsConstructor
 public class ProductDetailDTO {
 	private int productId;
 	private String brand;
@@ -27,4 +29,22 @@ public class ProductDetailDTO {
 	private String store;
 	private String virtue;
 	private List<String> imageUrls;
+	
+	public ProductDetailDTO(int productId, String name) {
+		super();
+		this.productId = productId;
+		this.name = name;
+	}
+
+	public ProductDetailDTO(int productId, String name, String brand, BigDecimal price) {
+		super();
+		this.productId = productId;
+		this.brand = brand;
+		this.name = name;
+		this.price = price;
+	}
+
+
+	
+	
 }

@@ -2,6 +2,8 @@ package com.model;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -58,7 +60,7 @@ public class Account {
 
 	@OneToMany(mappedBy = "account")
 	private Set<Content> Contents;
-
+	
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private WishList wishList;
 

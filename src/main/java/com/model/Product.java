@@ -44,6 +44,8 @@ public class Product {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
 	private List<Product_image> images = new ArrayList<>();
 
+	
+    
     @ManyToMany(mappedBy = "products")
     private Set<WishList> wishLists = new HashSet<>();
 
