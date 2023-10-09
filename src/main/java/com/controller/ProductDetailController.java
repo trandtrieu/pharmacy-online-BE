@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +19,7 @@ import com.dto.ProductDetailDTO;
 import com.model.Product;
 import com.model.Product_detail;
 import com.model.Product_image;
+import com.repository.CategoryRepository;
 import com.repository.ProductDetailRepository;
 import com.repository.ProductImageRepository;
 import com.repository.ProductRepository;
@@ -30,6 +35,11 @@ public class ProductDetailController {
 
     @Autowired
     private ProductImageRepository productImageRepository;
+    
+    @Autowired
+    private CategoryRepository categoryRepository;
+   
+    
     
     
     //show list product but with product and product_detail(without product_image)
@@ -63,7 +73,7 @@ public class ProductDetailController {
         return productDetailDTOs;
     }
     
-    //show list product 
+    //show list product
     @GetMapping("/products")
     public List<ProductDetailDTO> getAllProductsWithDetailsAndImages() {
         List<ProductDetailDTO> productDTOs = new ArrayList<>();
@@ -144,5 +154,25 @@ public class ProductDetailController {
 
         return ResponseEntity.ok(productDTO);
     }
+    
+    //delete product
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer productId) {
+        try {
+        	// Xóa dữ liệu liên quan từ các bảng khác trước     
+        	productImageRepository.deleteById(productId);
+        	productDetailRepository.deleteById(productId); 
+            // Tiếp theo, xóa sản phẩm từ bảng product
+        	categoryRepository.deleteById(productId);
+            productRepository.deleteById(productId);
+
+            return ResponseEntity.ok("Sản phẩm đã được xóa thành công.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Xóa sản phẩm không thành công.");
+        }
+    }
+    
+ 
+    
 
 }

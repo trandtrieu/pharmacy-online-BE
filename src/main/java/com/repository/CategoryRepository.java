@@ -2,10 +2,10 @@ package com.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.model.Product;
+import com.model.Category;
 
 import jakarta.transaction.Transactional;
 
-public interface ProductRepository extends JpaRepository<Product, Integer> {
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
 }
