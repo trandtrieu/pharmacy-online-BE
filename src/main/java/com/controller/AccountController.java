@@ -27,7 +27,26 @@ public class AccountController {
 			return new AccountDTO(account.getId(), account.getName(), account.getMail(), account.getPassword(),
 					account.getAddress(), account.getDob(), account.getAvatar(), account.getPhone(), account.getRole(),
 					account.getContents()
+
 			);
+
+		}).collect(Collectors.toList());
+		return accountDTOs;
+	}
+
+	@GetMapping("/accounts4")
+	public List<AccountDTO> getAllAccounts4() {
+		List<Account> accounts = accountRepository.findAll();
+		List<AccountDTO> accountDTOs = accounts.stream().map(account -> {
+			AccountDTO accountDTO = new AccountDTO(account.getId(), account.getName(), account.getMail(),
+					account.getPassword(), account.getAddress(), account.getDob(), account.getAvatar(),
+					account.getPhone(), account.getRole(), account.getContents());
+
+			if (account.getWishList() != null) {
+				accountDTO.setWishList(account.getWishList());
+			}
+
+			return accountDTO;
 		}).collect(Collectors.toList());
 		return accountDTOs;
 	}
@@ -49,5 +68,4 @@ public class AccountController {
 	public List<Account> getAllAccounts3() {
 		return accountRepository.findAll();
 	}
-
 }

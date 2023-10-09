@@ -8,6 +8,8 @@ import com.model.WishList;
 
 public interface WishListRepository extends JpaRepository<WishList, Long> {
     WishList findByAccountAndProducts(Account account, Product product);
+    WishList findByAccount_Id(Long accountId);
+
 }
 
 
