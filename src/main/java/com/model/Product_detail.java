@@ -145,6 +145,11 @@ public class Product_detail {
 		this.product = product;
 	}
 
+	public Product_detail(String p_guide) {
+		super();
+		this.p_guide = p_guide;
+	}
+
 
 
 }

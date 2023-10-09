@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 
@@ -44,7 +45,8 @@ public class Product {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
 	private List<Product_image> images = new ArrayList<>();
 
-	
+	@OneToOne(mappedBy = "product")
+	private Product_detail product_detail;
     
     @ManyToMany(mappedBy = "products")
     private Set<WishList> wishLists = new HashSet<>();
@@ -128,6 +130,14 @@ public class Product {
 
 	public void setWishLists(Set<WishList> wishLists) {
 		this.wishLists = wishLists;
+	}
+
+	public Product_detail getProduct_detail() {
+		return product_detail;
+	}
+
+	public void setProduct_detail(Product_detail product_detail) {
+		this.product_detail = product_detail;
 	}
 
 }
