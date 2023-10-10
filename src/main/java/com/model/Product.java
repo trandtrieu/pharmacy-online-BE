@@ -39,15 +39,15 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @JsonIgnore // Ngăn việc serialize mối quan hệ này
+    @JsonIgnore 
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @JsonManagedReference // Đánh dấu mối quan hệ để serialize
+    @JsonManagedReference 
     private List<Product_image> images = new ArrayList<>();
 
     @ManyToMany(mappedBy = "products")
-    @JsonIgnore // Ngăn việc serialize mối quan hệ này
+    @JsonIgnore 
     private Set<WishList> wishLists = new HashSet<>();
 
 	public Product(int product_id, String p_name, BigDecimal p_price, String p_brand, int p_status, Category category,
