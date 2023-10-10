@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +37,7 @@ public class WishList {
     private Account account;
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
         name = "wishlist_product",
         joinColumns = @JoinColumn(name = "wishlist_id"),

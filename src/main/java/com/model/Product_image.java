@@ -1,5 +1,7 @@
 package com.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +23,7 @@ public class Product_image  {
 	
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonBackReference
     private Product product;
 
 	public int getImage_id() {
@@ -57,10 +60,4 @@ public class Product_image  {
 	public Product_image() {
 		super();
 	}
-
-
-
-    
-    
-
 }

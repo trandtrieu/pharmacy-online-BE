@@ -6,6 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,38 +17,37 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-
-
-
-
 
 @Entity
 @Table(name = "product")
 public class Product {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int product_id;
-	@Column
-	private String p_name;
-	@Column
-	private BigDecimal p_price;
-	@Column
-	private String p_brand;
-	@Column
-	private int p_status;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int product_id;
+    @Column
+    private String p_name;
+    @Column
+    private BigDecimal p_price;
+    @Column
+    private String p_brand;
+    @Column
+    private int p_status;
 
-	@ManyToOne
-	@JoinColumn(name = "category_id")
-	private Category category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    @JsonIgnore // Ngăn việc serialize mối quan hệ này
+    private Category category;
 
-	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-	private List<Product_image> images = new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonManagedReference // Đánh dấu mối quan hệ để serialize
+    private List<Product_image> images = new ArrayList<>();
 
     @ManyToMany(mappedBy = "products")
+    @JsonIgnore // Ngăn việc serialize mối quan hệ này
     private Set<WishList> wishLists = new HashSet<>();
 
 	public Product(int product_id, String p_name, BigDecimal p_price, String p_brand, int p_status, Category category,

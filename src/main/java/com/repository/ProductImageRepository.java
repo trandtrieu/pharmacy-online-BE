@@ -11,4 +11,5 @@ public interface ProductImageRepository extends JpaRepository<Product_image, Int
 
 	List<Product_image> findByProduct(Product product);
 
+	
 }
