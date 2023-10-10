@@ -6,7 +6,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "role")
 public class Role {
@@ -17,31 +26,6 @@ public class Role {
 	@Column
 	private String role_name;
 
-	public long getRole_id() {
-		return role_id;
-	}
-
-	public void setRole_id(long role_id) {
-		this.role_id = role_id;
-	}
-
-	public String getRole_name() {
-		return role_name;
-	}
-
-	public void setRole_name(String role_name) {
-		this.role_name = role_name;
-	}
-
-	public Role(long role_id, String role_name) {
-		super();
-		this.role_id = role_id;
-		this.role_name = role_name;
-	}
-
-	public Role() {
-		super();
-	}
 
 
 

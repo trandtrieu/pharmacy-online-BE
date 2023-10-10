@@ -16,5 +16,4 @@ public class WishListDTO {
 	private int id;
 	private Date createdDate;
 	private Product product;
-	
 }

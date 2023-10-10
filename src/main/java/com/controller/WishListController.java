@@ -87,7 +87,7 @@ public class WishListController {
 				productDetailDTO.setProductId(product.getProduct_id());
 				productDetailDTO.setName(product.getP_name());
 				productDetailDTO.setPrice(product.getP_price());
-
+				productDetailDTO.setBrand(product.getP_brand());
 				List<String> imageUrls = product.getImages().stream().map(Product_image::getImageUrl)
 						.collect(Collectors.toList());
 
@@ -112,7 +112,7 @@ public class WishListController {
 
 			Product productToRemove = null;
 			for (Product product : wishlist.getProducts()) {
-			    if (product.getProduct_id() == productId) {
+				if (product.getProduct_id() == productId) {
 					productToRemove = product;
 					break;
 				}

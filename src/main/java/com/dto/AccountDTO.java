@@ -2,11 +2,23 @@ package com.dto;
 
 import java.util.Set;
 
+import com.model.Cart;
 import com.model.Content;
 import com.model.Orders;
 import com.model.Role;
 import com.model.WishList;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccountDTO {
 
 	private long id;
@@ -33,9 +45,7 @@ public class AccountDTO {
 
 	private WishList wishList;
 
-	public AccountDTO() {
-		super();
-	}
+	private Cart cart;
 
 	public AccountDTO(long id, String name, String mail, String password, String address, String dob, String avatar,
 			String phone, Role role, Set<com.model.Orders> orders, Set<Content> contents, WishList wishList) {
@@ -112,102 +122,6 @@ public class AccountDTO {
 		this.phone = phone;
 		this.role = role;
 		Contents = contents;
-		this.wishList = wishList;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getMail() {
-		return mail;
-	}
-
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getDob() {
-		return dob;
-	}
-
-	public void setDob(String dob) {
-		this.dob = dob;
-	}
-
-	public String getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public Role getRole() {
-		return role;
-	}
-
-	public void setRole(Role role) {
-		this.role = role;
-	}
-
-	public Set<Orders> getOrders() {
-		return Orders;
-	}
-
-	public void setOrders(Set<Orders> orders) {
-		Orders = orders;
-	}
-
-	public Set<Content> getContents() {
-		return Contents;
-	}
-
-	public void setContents(Set<Content> contents) {
-		Contents = contents;
-	}
-
-	public WishList getWishList() {
-		return wishList;
-	}
-
-	public void setWishList(WishList wishList) {
 		this.wishList = wishList;
 	}
 

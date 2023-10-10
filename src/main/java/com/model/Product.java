@@ -18,11 +18,17 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-
-
-
-
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "product")
 public class Product {
@@ -47,97 +53,11 @@ public class Product {
 
 	@OneToOne(mappedBy = "product")
 	private Product_detail product_detail;
-    
-    @ManyToMany(mappedBy = "products")
-    private Set<WishList> wishLists = new HashSet<>();
 
-	public Product(int product_id, String p_name, BigDecimal p_price, String p_brand, int p_status, Category category,
-			List<Product_image> images, Set<WishList> wishLists) {
-		super();
-		this.product_id = product_id;
-		this.p_name = p_name;
-		this.p_price = p_price;
-		this.p_brand = p_brand;
-		this.p_status = p_status;
-		this.category = category;
-		this.images = images;
-		this.wishLists = wishLists;
-	}
+	@ManyToMany(mappedBy = "products")
+	private Set<WishList> wishLists = new HashSet<>();
 
-	public Product() {
-		super();
-	}
-
-	public int getProduct_id() {
-		return product_id;
-	}
-
-	public void setProduct_id(int product_id) {
-		this.product_id = product_id;
-	}
-
-	public String getP_name() {
-		return p_name;
-	}
-
-	public void setP_name(String p_name) {
-		this.p_name = p_name;
-	}
-
-	public BigDecimal getP_price() {
-		return p_price;
-	}
-
-	public void setP_price(BigDecimal p_price) {
-		this.p_price = p_price;
-	}
-
-	public String getP_brand() {
-		return p_brand;
-	}
-
-	public void setP_brand(String p_brand) {
-		this.p_brand = p_brand;
-	}
-
-	public int getP_status() {
-		return p_status;
-	}
-
-	public void setP_status(int p_status) {
-		this.p_status = p_status;
-	}
-
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-
-	public List<Product_image> getImages() {
-		return images;
-	}
-
-	public void setImages(List<Product_image> images) {
-		this.images = images;
-	}
-
-	public Set<WishList> getWishLists() {
-		return wishLists;
-	}
-
-	public void setWishLists(Set<WishList> wishLists) {
-		this.wishLists = wishLists;
-	}
-
-	public Product_detail getProduct_detail() {
-		return product_detail;
-	}
-
-	public void setProduct_detail(Product_detail product_detail) {
-		this.product_detail = product_detail;
-	}
+//    @ManyToMany(mappedBy = "products")
+//    private Set<Cart> carts = new HashSet<>();
 
 }

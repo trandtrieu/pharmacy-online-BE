@@ -8,8 +8,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "product_detail")
 public class Product_detail {
@@ -46,109 +55,6 @@ public class Product_detail {
 	@JoinColumn(name = "product_id")
 	private Product product;
 
-	public Product_detail(int detail_id, String p_component, String p_vitue, String p_object, String p_guide,
-			String p_preservation, String p_instruction, String p_store, String p_madeIn, Product product) {
-		super();
-		this.detail_id = detail_id;
-		this.p_component = p_component;
-		this.p_vitue = p_vitue;
-		this.p_object = p_object;
-		this.p_guide = p_guide;
-		this.p_preservation = p_preservation;
-		this.p_instruction = p_instruction;
-		this.p_store = p_store;
-		this.p_madeIn = p_madeIn;
-		this.product = product;
-	}
-
-	public Product_detail() {
-		super();
-	}
-
-	public int getDetail_id() {
-		return detail_id;
-	}
-
-	public void setDetail_id(int detail_id) {
-		this.detail_id = detail_id;
-	}
-
-	public String getP_component() {
-		return p_component;
-	}
-
-	public void setP_component(String p_component) {
-		this.p_component = p_component;
-	}
-
-	public String getP_vitue() {
-		return p_vitue;
-	}
-
-	public void setP_vitue(String p_vitue) {
-		this.p_vitue = p_vitue;
-	}
-
-	public String getP_object() {
-		return p_object;
-	}
-
-	public void setP_object(String p_object) {
-		this.p_object = p_object;
-	}
-
-	public String getP_guide() {
-		return p_guide;
-	}
-
-	public void setP_guide(String p_guide) {
-		this.p_guide = p_guide;
-	}
-
-	public String getP_preservation() {
-		return p_preservation;
-	}
-
-	public void setP_preservation(String p_preservation) {
-		this.p_preservation = p_preservation;
-	}
-
-	public String getP_instruction() {
-		return p_instruction;
-	}
-
-	public void setP_instruction(String p_instruction) {
-		this.p_instruction = p_instruction;
-	}
-
-	public String getP_store() {
-		return p_store;
-	}
-
-	public void setP_store(String p_store) {
-		this.p_store = p_store;
-	}
-
-	public String getP_madeIn() {
-		return p_madeIn;
-	}
-
-	public void setP_madeIn(String p_madeIn) {
-		this.p_madeIn = p_madeIn;
-	}
-
-	public Product getProduct() {
-		return product;
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
-	}
-
-	public Product_detail(String p_guide) {
-		super();
-		this.p_guide = p_guide;
-	}
 
 
 

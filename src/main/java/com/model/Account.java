@@ -61,5 +61,9 @@ public class Account {
 	
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private WishList wishList;
+	
+//	
+//	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//	private Cart cart;
 
 }
