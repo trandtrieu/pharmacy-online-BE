@@ -33,28 +33,4 @@ public class AccountController {
 		}).collect(Collectors.toList());
 		return accountDTOs;
 	}
-	
-	
-	@GetMapping("/accounts2")
-	public List<AccountDTO> getAllAccounts2() {
-	    List<Account> accounts = accountRepository.findAll();
-	    List<AccountDTO> accountDTOs = accounts.stream().map(account -> {
-	        AccountDTO accountDTO = new AccountDTO();
-	        accountDTO.setId(account.getId());
-	        accountDTO.setName(account.getName());
-	        accountDTO.setMail(account.getMail());
-	        accountDTO.setPassword(account.getPassword());
-	        accountDTO.setAddress(account.getAddress());
-	        accountDTO.setDob(account.getDob());
-	        accountDTO.setAvatar(account.getAvatar());
-	        accountDTO.setPhone(account.getPhone());
-	        accountDTO.setRole(account.getRole());
-	        accountDTO.setContents(account.getContents());
-	        accountDTO.setWishList(account.getWishList()); // Include the WishList
-
-	        return accountDTO;
-	    }).collect(Collectors.toList());
-	    return accountDTOs;
-	}
-
 }

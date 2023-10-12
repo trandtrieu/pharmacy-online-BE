@@ -29,7 +29,6 @@ public class ProductDetailDTO {
 	private String store;
 	private String virtue;
 	private List<String> imageUrls;
-	
 	public ProductDetailDTO(int productId, String name) {
 		super();
 		this.productId = productId;

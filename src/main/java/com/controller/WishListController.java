@@ -27,7 +27,7 @@ import com.repository.WishListRepository;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/pharmacy-online/")
+@RequestMapping("/pharmacy-online/wishlist/")
 public class WishListController {
 
 	@Autowired
@@ -39,7 +39,7 @@ public class WishListController {
 	@Autowired
 	private WishListRepository wishListRepository;
 
-	@PostMapping("/wishlist/add-wishlist")
+	@PostMapping("/add-wishlist")
 	public ResponseEntity<String> addToWishlist(@RequestParam Long accountId, @RequestParam Integer productId) {
 		Account account = accountRepository.findById(accountId).orElse(null);
 		Product product = productRepository.findById(productId).orElse(null);
@@ -59,7 +59,7 @@ public class WishListController {
 		}
 	}
 
-	@GetMapping("/wishlist/id/{accountId}")
+	@GetMapping("/id/{accountId}")
 	public ResponseEntity<Set<Integer>> getWishlistByAccountId(@PathVariable Long accountId) {
 		Account account = accountRepository.findById(accountId).orElse(null);
 
@@ -74,7 +74,7 @@ public class WishListController {
 		}
 	}
 
-	@GetMapping("/wishlist/{accountId}")
+	@GetMapping("/{accountId}")
 	public ResponseEntity<Set<ProductDetailDTO>> getProductsInWishlist(@PathVariable Long accountId) {
 		Account account = accountRepository.findById(accountId).orElse(null);
 
@@ -102,7 +102,7 @@ public class WishListController {
 		}
 	}
 
-	@DeleteMapping("/wishlist/{accountId}/remove-product/{productId}")
+	@DeleteMapping("/{accountId}/remove-product/{productId}")
 	public ResponseEntity<String> removeProductFromWishlist(@PathVariable Long accountId,
 			@PathVariable Integer productId) {
 		Account account = accountRepository.findById(accountId).orElse(null);

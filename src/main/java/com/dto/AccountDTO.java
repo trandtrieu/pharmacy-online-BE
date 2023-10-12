@@ -2,13 +2,11 @@ package com.dto;
 
 import java.util.Set;
 
-import com.model.Cart;
 import com.model.Content;
 import com.model.Orders;
 import com.model.Role;
 import com.model.WishList;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class AccountDTO {
 
 	private long id;
@@ -45,7 +43,7 @@ public class AccountDTO {
 
 	private WishList wishList;
 
-	private Cart cart;
+//	private Cart cart;
 
 	public AccountDTO(long id, String name, String mail, String password, String address, String dob, String avatar,
 			String phone, Role role, Set<com.model.Orders> orders, Set<Content> contents, WishList wishList) {

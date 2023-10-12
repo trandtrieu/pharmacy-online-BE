@@ -19,12 +19,11 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Data
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,6 +31,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "product")
 public class Product {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int product_id;
@@ -57,7 +57,6 @@ public class Product {
 	@ManyToMany(mappedBy = "products")
 	private Set<WishList> wishLists = new HashSet<>();
 
-//    @ManyToMany(mappedBy = "products")
-//    private Set<Cart> carts = new HashSet<>();
+
 
 }
