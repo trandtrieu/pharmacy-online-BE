@@ -44,6 +44,13 @@ public class Product {
 	@Column
 	private int p_status;
 
+	@Column
+	private int p_quantity;
+	
+	@Column
+	private int p_isSale;
+	
+	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	private Category category;

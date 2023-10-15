@@ -15,18 +15,14 @@ import com.repository.CategoryRepository;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/pharmacy-online/")
+@RequestMapping("/pharmacy-online/category/")
 public class CategoryController {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
 
-	@GetMapping("/category/list")
-	public List<Category> getAllProducts() {
-		return categoryRepository.findAll();
-	}
 
-	@GetMapping("/category")
+	@GetMapping("/type")
 	public List<CategoryDTO> getAllCategory() {
 		List<Category> categories = categoryRepository.findAll();
 		List<CategoryDTO> categoryDTOs = categories.stream().map(category -> {
@@ -34,4 +30,7 @@ public class CategoryController {
 		}).collect(Collectors.toList());
 		return categoryDTOs;
 	}
+	
+	
+	
 }

@@ -24,6 +24,7 @@ import com.model.WishList;
 import com.repository.AccountRepository;
 import com.repository.ProductRepository;
 import com.repository.WishListRepository;
+import com.service.WishListService;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -38,6 +39,9 @@ public class WishListController {
 
 	@Autowired
 	private WishListRepository wishListRepository;
+
+	@Autowired
+	private WishListService wishlistService;
 
 	@PostMapping("/add-wishlist")
 	public ResponseEntity<String> addToWishlist(@RequestParam Long accountId, @RequestParam Integer productId) {
@@ -129,4 +133,9 @@ public class WishListController {
 		}
 	}
 
+	@GetMapping("/count-product-wishlist")
+	public ResponseEntity<Integer> countProductsInWishlist(@RequestParam Long accountId) {
+		int uniqueProductCount = wishlistService.countProductsInWishlist(accountId);
+		return ResponseEntity.ok(uniqueProductCount);
+	}
 }

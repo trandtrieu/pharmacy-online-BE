@@ -21,6 +21,10 @@ public class ProductController {
 
 	@GetMapping("/products/test")
 	public List<Product> getAllProducts() {
+		
+		
+		
+		
 		return productRepository.findAll();
 	}
 

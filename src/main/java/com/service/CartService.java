@@ -2,8 +2,10 @@ package com.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,7 @@ public class CartService {
 	private ProductRepository productRepository;
 	@Autowired
 	private CartItemRepository cartItemRepository;
+
 	public void addToCart(Long accountId, int productId, int quantity) {
 		Account account = accountRepository.findById(accountId)
 				.orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản"));
@@ -87,8 +90,9 @@ public class CartService {
 				List<String> imageUrls = product.getImages().stream().map(Product_image::getImageUrl)
 						.collect(Collectors.toList());
 				productDetailDTO.setImageUrls(imageUrls);
-				CartItemDTO productWithQuantity = new CartItemDTO(cartItem.getId(),productDetailDTO, cartItem.getQuantity());
-				productDTOs.add(productWithQuantity);				
+				CartItemDTO productWithQuantity = new CartItemDTO(cartItem.getId(), productDetailDTO,
+						cartItem.getQuantity());
+				productDTOs.add(productWithQuantity);
 
 			}
 
@@ -97,31 +101,70 @@ public class CartService {
 			return Collections.emptyList();
 		}
 	}
-	public void removeFromCart(Integer cartId) {
-	    CartItem cartItem = cartItemRepository.findById(cartId).orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm trong giỏ hàng"));
 
-	    // Xóa cartItem khỏi giỏ hàng
-	    cartItemRepository.delete(cartItem);
+	public void removeFromCart(Integer cartId) {
+		CartItem cartItem = cartItemRepository.findById(cartId)
+				.orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm trong giỏ hàng"));
+
+		// Xóa cartItem khỏi giỏ hàng
+		cartItemRepository.delete(cartItem);
 	}
 
-	 public void updateCartItems(List<CartItemDTO> updatedCartItems) {
-	        for (CartItemDTO updatedCartItem : updatedCartItems) {
-	            int cartItemId = updatedCartItem.getCartId();
-	            int newQuantity = updatedCartItem.getQuantity();
+	public void updateCartItems(List<CartItemDTO> updatedCartItems) {
+		for (CartItemDTO updatedCartItem : updatedCartItems) {
+			int cartItemId = updatedCartItem.getCartId();
+			int newQuantity = updatedCartItem.getQuantity();
 
-	            Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
+			Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
 
-	            if (cartItemOptional.isPresent()) {
-	                CartItem cartItem = cartItemOptional.get();
-	                cartItem.setQuantity(newQuantity);
+			if (cartItemOptional.isPresent()) {
+				CartItem cartItem = cartItemOptional.get();
+				cartItem.setQuantity(newQuantity);
 
-	                // Update the cart item in the database
-	                cartItemRepository.save(cartItem);
-	            } else {
-	                // Handle the case where the cart item with the provided ID is not found
-	                // You can throw an exception or handle it as needed
-	                throw new RuntimeException("Cart item with ID " + cartItemId + " not found.");
-	            }
+				// Update the cart item in the database
+				cartItemRepository.save(cartItem);
+			} else {
+				// Handle the case where the cart item with the provided ID is not found
+				// You can throw an exception or handle it as needed
+				throw new RuntimeException("Cart item with ID " + cartItemId + " not found.");
+			}
+		}
+	}
+	
+	public int getTotalQuantityInCart(Long accountId) {
+	    Account account = accountRepository.findById(accountId).orElse(null);
+
+	    if (account != null && account.getCart() != null) {
+	        Cart cart = account.getCart();
+	        List<CartItem> cartItems = cart.getCartItems();
+
+	        int totalQuantity = 0;
+	        for (CartItem cartItem : cartItems) {
+	            totalQuantity += cartItem.getQuantity();
 	        }
+
+	        return totalQuantity;
+	    } else {
+	        return 0; // Hoặc bạn có thể ném một ngoại lệ nếu không tìm thấy tài khoản hoặc giỏ hàng.
 	    }
+	}
+	public int countProductsInCart(Long accountId) {
+	    Account account = accountRepository.findById(accountId).orElse(null);
+
+	    if (account != null && account.getCart() != null) {
+	        Cart cart = account.getCart();
+	        List<CartItem> cartItems = cart.getCartItems();
+
+	        Set<Product> uniqueProducts = new HashSet<>();
+	        
+	        for (CartItem cartItem : cartItems) {
+	            uniqueProducts.add(cartItem.getProduct());
+	        }
+
+	        return uniqueProducts.size();
+	    } else {
+	        return 0; 
+	    }
+	}
+
 }

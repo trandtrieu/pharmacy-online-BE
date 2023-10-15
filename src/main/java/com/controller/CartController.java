@@ -65,4 +65,17 @@ public class CartController {
 	      return ResponseEntity.badRequest().body("Error updating cart: " + e.getMessage());
 	    }
 	  }
+	 
+	 @GetMapping("/get-total-quantity-in-cart")
+	 public ResponseEntity<Integer> getTotalQuantityInCart(@RequestParam Long accountId) {
+	     int totalQuantity = cartService.getTotalQuantityInCart(accountId);
+	     return ResponseEntity.ok(totalQuantity);
+	 }
+	 
+	 @GetMapping("/count-product-cart")
+	 public ResponseEntity<Integer> countProductsInCart(@RequestParam Long accountId) {
+	     int uniqueProductCount = cartService.countProductsInCart(accountId);
+	     return ResponseEntity.ok(uniqueProductCount);
+	 }
+
 }
