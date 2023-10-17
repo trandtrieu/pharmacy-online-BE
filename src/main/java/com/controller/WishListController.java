@@ -1,6 +1,5 @@
 package com.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,7 +21,6 @@ import com.model.Product;
 import com.model.Product_image;
 import com.model.WishList;
 import com.repository.AccountRepository;
-import com.repository.ProductRepository;
 import com.repository.WishListRepository;
 import com.service.WishListService;
 
@@ -30,9 +28,9 @@ import com.service.WishListService;
 @RestController
 @RequestMapping("/pharmacy-online/wishlist/")
 public class WishListController {
-
-	@Autowired
-	private ProductRepository productRepository;
+//
+//	@Autowired
+//	private ProductRepository productRepository;
 
 	@Autowired
 	private AccountRepository accountRepository;
