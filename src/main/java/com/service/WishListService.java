@@ -1,40 +1,41 @@
 package com.service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.model.Account;
-import com.model.Cart;
-import com.model.CartItem;
 import com.model.Product;
+import com.model.WishList;
 import com.repository.AccountRepository;
+import com.repository.ProductRepository;
 
 @Service
 public class WishListService {
 
 	@Autowired
 	private AccountRepository accountRepository;
-	
-	public int countProductsInWishlist(Long accountId) {
-	    Account account = accountRepository.findById(accountId).orElse(null);
 
-	    if (account != null && account.getCart() != null) {
-	        Cart cart = account.getCart();
-	        List<CartItem> cartItems = cart.getCartItems();
+	@Autowired
+	private ProductRepository productRepository;
 
-	        Set<Product> uniqueProducts = new HashSet<>();
-	        
-	        for (CartItem cartItem : cartItems) {
-	            uniqueProducts.add(cartItem.getProduct());
-	        }
+	public void addToWishlist(Long accountId, int productId) {
+		Account account = accountRepository.findById(accountId).orElse(null);
+		Product product = productRepository.findById(productId).orElse(null);
 
-	        return uniqueProducts.size();
-	    } else {
-	        return 0; 
-	    }
+		if (account != null && product != null) {
+			if (account.getWishList() == null) {
+				account.setWishList(new WishList());
+			}
+			WishList wishList = account.getWishList();
+			wishList.addProduct(product);
+			wishList.setAccount(account);
+			wishList.setCreatedDate(new Date());
+			accountRepository.save(account);
+		}
 	}
+	
+	
+	
 }

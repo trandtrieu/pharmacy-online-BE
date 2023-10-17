@@ -43,23 +43,15 @@ public class WishListController {
 	@Autowired
 	private WishListService wishlistService;
 
+	
+	
 	@PostMapping("/add-wishlist")
-	public ResponseEntity<String> addToWishlist(@RequestParam Long accountId, @RequestParam Integer productId) {
-		Account account = accountRepository.findById(accountId).orElse(null);
-		Product product = productRepository.findById(productId).orElse(null);
-
-		if (account != null && product != null) {
-			if (account.getWishList() == null) {
-				account.setWishList(new WishList());
-			}
-			WishList wishList = account.getWishList();
-			wishList.addProduct(product);
-			wishList.setAccount(account);
-			wishList.setCreatedDate(new Date());
-			accountRepository.save(account);
-			return ResponseEntity.ok("Product added to wishlist successfully.");
-		} else {
-			return ResponseEntity.badRequest().body("Failed to add product to wishlist.");
+	public ResponseEntity<String> addToWishlist(@RequestParam Long accountId, @RequestParam int productId) {
+		try {
+			wishlistService.addToWishlist(accountId, productId);
+			return ResponseEntity.ok("Sản phẩm đã được thêm vào wishlist.");
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body("Lỗi khi thêm sản phẩm vào wishlist: " + e.getMessage());
 		}
 	}
 
@@ -133,9 +125,5 @@ public class WishListController {
 		}
 	}
 
-	@GetMapping("/count-product-wishlist")
-	public ResponseEntity<Integer> countProductsInWishlist(@RequestParam Long accountId) {
-		int uniqueProductCount = wishlistService.countProductsInWishlist(accountId);
-		return ResponseEntity.ok(uniqueProductCount);
-	}
+
 }
