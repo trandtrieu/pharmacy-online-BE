@@ -2,9 +2,13 @@ package com.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,7 +27,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,7 +34,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "product")
 public class Product {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int product_id;
@@ -46,10 +49,14 @@ public class Product {
 
 	@Column
 	private int p_quantity;
-	
+
 	@Column
 	private int p_isSale;
-	
+
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	@Column
+	private Date createdDate;
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
@@ -63,7 +70,5 @@ public class Product {
 
 	@ManyToMany(mappedBy = "products")
 	private Set<WishList> wishLists = new HashSet<>();
-
-
 
 }

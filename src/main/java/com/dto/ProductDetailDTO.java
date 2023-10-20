@@ -1,7 +1,10 @@
 package com.dto;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 import lombok.Getter;
@@ -17,6 +20,9 @@ public class ProductDetailDTO {
 	private String brand;
 	private String name;
 	private BigDecimal price;
+	
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	private Date createdDate;
 	private int status;
 	private int quantity;
 	private int isSale;
@@ -31,6 +37,9 @@ public class ProductDetailDTO {
 	private String store;
 	private String virtue;
 	private List<String> imageUrls;
+	
+	
+	
 	public ProductDetailDTO(int productId, String name) {
 		super();
 		this.productId = productId;

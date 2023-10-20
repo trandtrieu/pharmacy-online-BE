@@ -1,5 +1,6 @@
 package com.model;
 
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -63,5 +64,7 @@ public class Account {
 	
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Cart cart;
-
+	
+    @OneToMany(mappedBy = "account")
+    private List<Prescription> prescriptions;
 }
