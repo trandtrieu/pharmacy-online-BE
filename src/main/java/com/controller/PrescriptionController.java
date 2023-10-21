@@ -1,5 +1,8 @@
 package com.controller;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,22 +33,19 @@ public class PrescriptionController {
 	@Autowired
 	private PrescriptionService prescriptionService;
 
-	@GetMapping("/list")
-	public List<PrescriptionDTO> getAllPresciption() {
-		List<Prescription> prescriptions = prescriptionRepository.findAll();
+	@GetMapping("/byaccount")
+	public List<PrescriptionDTO> getPrescriptionsByAccountId(@RequestParam("account_id") Long accountId) {
+		List<Prescription> prescriptions = prescriptionRepository.findPresciprionByAccountId(accountId);
 		List<PrescriptionDTO> prescriptionDTOs = prescriptions.stream().map(prescription -> {
-			return new PrescriptionDTO(prescription.getId(), prescription.getNote(), prescription.getImageUrls(),
-					prescription.getStatus());
-		}).collect(Collectors.toList());
-		return prescriptionDTOs;
-	}
+			PrescriptionDTO prescriptionDTO = new PrescriptionDTO(prescription.getId(), prescription.getNote(),
+					prescription.getImageUrls(), prescription.getStatus(), prescription.getAccount().getName(),
+					prescription.getAccount().getId());
 
-	@GetMapping("/byid")
-	public List<PrescriptionDTO> getProductsByCategoryId(@RequestParam("account_id") Long account_id) {
-		List<Prescription> prescriptions = prescriptionRepository.findPresciprionByAccountId(account_id);
-		List<PrescriptionDTO> prescriptionDTOs = prescriptions.stream().map(prescription -> {
-			return new PrescriptionDTO(prescription.getId(), prescription.getNote(), prescription.getImageUrls(),
-					prescription.getStatus(), prescription.getAccount().getName(), prescription.getAccount().getId());
+			prescriptionDTO.setCreatedDate(prescription.getCreatedDate());
+			prescriptionDTO
+					.setCreatedTime(prescription.getCreatedTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+
+			return prescriptionDTO;
 		}).collect(Collectors.toList());
 		return prescriptionDTOs;
 	}
@@ -53,12 +53,17 @@ public class PrescriptionController {
 	@PostMapping("/create")
 	public ResponseEntity<PrescriptionDTO> createPrescription(@RequestBody Prescription prescription,
 			@RequestParam("account_id") Long accountId) {
+		LocalDate createdDate = LocalDate.now();
+		LocalTime createdTime = LocalTime.now();
+		prescription.setCreatedDate(createdDate);
+		prescription.setCreatedTime(createdTime);
+
 		Prescription createdPrescription = prescriptionService.createPrescription(prescription, accountId);
 
 		PrescriptionDTO prescriptionDTO = new PrescriptionDTO(createdPrescription.getId(),
 				createdPrescription.getNote(), createdPrescription.getImageUrls(), createdPrescription.getStatus(),
-				createdPrescription.getAccount().getName(), createdPrescription.getAccount().getId());
-
+				createdPrescription.getName(), createdPrescription.getPhone(), createdPrescription.getEmail(), createdPrescription.getAccount().getId(), createdDate,
+				createdTime);
 		return new ResponseEntity<>(prescriptionDTO, HttpStatus.CREATED);
 	}
 }

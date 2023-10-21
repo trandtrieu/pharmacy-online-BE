@@ -1,5 +1,8 @@
 package com.model;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,28 +21,40 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name= "prescription")
+@Table(name = "prescription")
 public class Prescription {
 
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
 	@Column
 	private String note;
-	
-	
+
 	@Column
 	private String imageUrls;
-	
+
 	@Column
 	private int status;
+
+	@Column
+	private String name;
+
+	@Column
+	private String phone;
 	
 	
-    @ManyToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
-	
-	
+	@Column
+	private String email;
+
+	@Column
+	private LocalDate createdDate;
+
+	@Column
+	private LocalTime createdTime;
+
+	@ManyToOne
+	@JoinColumn(name = "account_id")
+	private Account account;
+
 }
