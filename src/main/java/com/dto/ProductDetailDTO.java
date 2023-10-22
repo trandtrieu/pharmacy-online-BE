@@ -17,12 +17,12 @@ public class ProductDetailDTO {
 	private String object;
 	private String preservation;
 	private String store;
-	private String virtue;
+	private String vitue;
 	private List<String> imageUrls;
 
 	public ProductDetailDTO(int productId, String brand, String name, BigDecimal price, int status, int category_id,
 			String component, String guide, String instruction, String madeIn, String object, String preservation,
-			String store, String virtue, List<String> imageUrls) {
+			String store, String vitue, List<String> imageUrls) {
 		super();
 		this.productId = productId;
 		this.brand = brand;
@@ -37,7 +37,7 @@ public class ProductDetailDTO {
 		this.object = object;
 		this.preservation = preservation;
 		this.store = store;
-		this.virtue = virtue;
+		this.vitue = vitue;
 		this.imageUrls = imageUrls;
 	}
 
@@ -149,12 +149,12 @@ public class ProductDetailDTO {
 		this.store = store;
 	}
 
-	public String getVirtue() {
-		return virtue;
+	public String getVitue() {
+		return vitue;
 	}
 
-	public void setVirtue(String virtue) {
-		this.virtue = virtue;
+	public void setVitue(String vitue) {
+		this.vitue = vitue;
 	}
 
 	public List<String> getImageUrls() {

@@ -2,6 +2,7 @@ package com.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,6 @@ public class ProductService {
 		product.setP_price(productDetailDTO.getPrice());
 		product.setP_brand(productDetailDTO.getBrand());
 		product.setP_status(productDetailDTO.getStatus());
-//        productDetailDTO.setCategory_id(productDetailDTO.getCategory_id());
 		// Lưu Product vào cơ sở dữ liệu
 		
 
@@ -53,12 +53,13 @@ public class ProductService {
 			// Gán category cho sản phẩm
 			product.setCategory(category);
 		}
+		
 		productRepository.save(product);
 
 		// Tạo một đối tượng Product_detail từ DTO
 		Product_detail productDetail = new Product_detail();
 		productDetail.setP_component(productDetailDTO.getComponent());
-		productDetail.setP_vitue(productDetailDTO.getVirtue());
+		productDetail.setP_vitue(productDetailDTO.getVitue());
 		productDetail.setP_object(productDetailDTO.getObject());
 		productDetail.setP_guide(productDetailDTO.getGuide());
 		productDetail.setP_preservation(productDetailDTO.getPreservation());
@@ -83,5 +84,61 @@ public class ProductService {
 			productImageRepository.saveAll(productImages);
 		}
 	}
+	
+	
+	@Transactional
+	public void updateProduct(Integer productId, ProductDetailDTO productDetailDTO) {
+	    // Kiểm tra xem sản phẩm có tồn tại không
+	    Optional<Product> productOptional = productRepository.findById(productId);
+	    
+	    if (productOptional.isPresent()) {
+	        Product product = productOptional.get();
+	        
+	        // Cập nhật thông tin sản phẩm từ DTO
+	        product.setP_name(productDetailDTO.getName());
+	        product.setP_price(productDetailDTO.getPrice());
+	        product.setP_brand(productDetailDTO.getBrand());
+	        product.setP_status(productDetailDTO.getStatus());
+
+	        Category category = categoryRepository.findById(productDetailDTO.getCategory_id()).orElse(null);
+	        // Kiểm tra xem category có tồn tại không
+	        if (category != null) {
+	        	category.setCategory_id(productDetailDTO.getCategory_id());
+	            product.setCategory(category);
+	        }
+	        productRepository.save(product);
+
+	        // Tìm chi tiết sản phẩm dựa trên productId
+	        Product_detail productDetail = productDetailRepository.findByProduct(product);
+	        if (productDetail!= null) {
+	            // Cập nhật thông tin chi tiết sản phẩm từ DTO
+	            productDetail.setP_component(productDetailDTO.getComponent());
+	            productDetail.setP_vitue(productDetailDTO.getVitue());
+	            productDetail.setP_object(productDetailDTO.getObject());
+	            productDetail.setP_guide(productDetailDTO.getGuide());
+	            productDetail.setP_preservation(productDetailDTO.getPreservation());
+	            productDetail.setP_instruction(productDetailDTO.getInstruction());
+	            productDetail.setP_store(productDetailDTO.getStore());
+	            productDetail.setP_madeIn(productDetailDTO.getMadeIn());
+
+	            productDetailRepository.save(productDetail);
+	        }
+
+	        // Lưu danh sách hình ảnh sản phẩm
+	        List<String> imageUrls = productDetailDTO.getImageUrls();
+	        if (imageUrls != null && !imageUrls.isEmpty()) {
+	            List<Product_image> productImages = new ArrayList<>();
+	            
+	            for (String imageUrl : imageUrls) {
+	                Product_image productImage = new Product_image();
+	                productImage.setImageUrl(imageUrl);
+	                productImage.setProduct(product);
+	                productImages.add(productImage);
+	            }
+	            productImageRepository.saveAll(productImages);
+	        }
+	    }
+	}
+
 
 }

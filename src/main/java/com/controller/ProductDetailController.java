@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.ProductDetailDTO;
+import com.exception.ResourceNotFoundException;
 import com.model.Product;
 import com.model.Product_detail;
 import com.model.Product_image;
@@ -23,156 +24,155 @@ import com.repository.CategoryRepository;
 import com.repository.ProductDetailRepository;
 import com.repository.ProductImageRepository;
 import com.repository.ProductRepository;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/pharmacy-online/")
 public class ProductDetailController {
-    @Autowired
-    private ProductDetailRepository productDetailRepository;
+	@Autowired
+	private ProductDetailRepository productDetailRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+	@Autowired
+	private ProductRepository productRepository;
 
-    @Autowired
-    private ProductImageRepository productImageRepository;
-    
-    @Autowired
-    private CategoryRepository categoryRepository;
-   
-    
-    
-    
-    //show list product but with product and product_detail(without product_image)
-    @GetMapping("/products/abc")
-    public List<ProductDetailDTO> getAllProductDetails() {
-        List<Product_detail> productDetails = productDetailRepository.findAll();
+	@Autowired
+	private ProductImageRepository productImageRepository;
 
-        List<ProductDetailDTO> productDetailDTOs = new ArrayList<>();
-        
-        for (Product_detail detail : productDetails) {
-            Product product = productRepository.findById(detail.getProduct().getProduct_id()).orElse(null);
-            if (product != null) {
-                ProductDetailDTO dto = new ProductDetailDTO();
-                dto.setProductId(product.getProduct_id());
-                dto.setBrand(product.getP_brand());
-                dto.setName(product.getP_name());
-                dto.setPrice(product.getP_price());
-                dto.setStatus(product.getP_status());
-                dto.setComponent(detail.getP_component());
-                dto.setGuide(detail.getP_guide());
-                dto.setInstruction(detail.getP_instruction());
-                dto.setMadeIn(detail.getP_madeIn());
-                dto.setObject(detail.getP_object());
-                dto.setPreservation(detail.getP_preservation());
-                dto.setStore(detail.getP_store());
-                dto.setVirtue(detail.getP_vitue());
-                productDetailDTOs.add(dto);
-            }
-        }
+	@Autowired
+	private CategoryRepository categoryRepository;
 
-        return productDetailDTOs;
-    }
-    
-    //show list product
-    @GetMapping("/products")
-    public List<ProductDetailDTO> getAllProductsWithDetailsAndImages() {
-        List<ProductDetailDTO> productDTOs = new ArrayList<>();
+	// show list product but with product and product_detail(without product_image)
+	@GetMapping("/products/abc")
+	public List<ProductDetailDTO> getAllProductDetails() {
+		List<Product_detail> productDetails = productDetailRepository.findAll();
 
-        List<Product> products = productRepository.findAll();
-        for (Product product : products) {
-            Product_detail productDetail =  productDetailRepository.findByProduct(product);
-            List<Product_image> productImages = productImageRepository.findByProduct(product);
+		List<ProductDetailDTO> productDetailDTOs = new ArrayList<>();
 
-            ProductDetailDTO productDTO = new ProductDetailDTO();
-            productDTO.setProductId(product.getProduct_id());
-            productDTO.setBrand(product.getP_brand());
-            productDTO.setName(product.getP_name());
-            productDTO.setPrice(product.getP_price());
-            productDTO.setStatus(product.getP_status());
-//            productDTO.setCategory_id(product.get_());
+		for (Product_detail detail : productDetails) {
+			Product product = productRepository.findById(detail.getProduct().getProduct_id()).orElse(null);
+			if (product != null) {
+				ProductDetailDTO dto = new ProductDetailDTO();
+				dto.setProductId(product.getProduct_id());
+				dto.setBrand(product.getP_brand());
+				dto.setName(product.getP_name());
+				dto.setPrice(product.getP_price());
+				dto.setStatus(product.getP_status());
+				dto.setComponent(detail.getP_component());
+				dto.setGuide(detail.getP_guide());
+				dto.setInstruction(detail.getP_instruction());
+				dto.setMadeIn(detail.getP_madeIn());
+				dto.setObject(detail.getP_object());
+				dto.setPreservation(detail.getP_preservation());
+				dto.setStore(detail.getP_store());
+				dto.setVitue(detail.getP_vitue());
+				productDetailDTOs.add(dto);
+			}
+		}
 
-            if (productDetail != null) {
-                productDTO.setComponent(productDetail.getP_component());
-                productDTO.setGuide(productDetail.getP_guide());
-                productDTO.setInstruction(productDetail.getP_instruction());
-                productDTO.setMadeIn(productDetail.getP_madeIn());
-                productDTO.setObject(productDetail.getP_object());
-                productDTO.setPreservation(productDetail.getP_preservation());
-                productDTO.setStore(productDetail.getP_store());
-                productDTO.setVirtue(productDetail.getP_vitue());
-            }
+		return productDetailDTOs;
+	}
 
-            List<String> imageUrls = new ArrayList<>();
-            for (Product_image productImage : productImages) {
-                imageUrls.add(productImage.getImageUrl());
-            }
-            productDTO.setImageUrls(imageUrls);
+	// show list product
+	@GetMapping("/products")
+	public List<ProductDetailDTO> getAllProductsWithDetailsAndImages() {
+		List<ProductDetailDTO> productDTOs = new ArrayList<>();
 
-            productDTOs.add(productDTO);
-        }
+		List<Product> products = productRepository.findAll();
+		for (Product product : products) {
+			Product_detail productDetail = productDetailRepository.findByProduct(product);
+			List<Product_image> productImages = productImageRepository.findByProduct(product);
 
-        return productDTOs;
-    }
-    
-    
+			ProductDetailDTO productDTO = new ProductDetailDTO();
+			productDTO.setProductId(product.getProduct_id());
+			productDTO.setBrand(product.getP_brand());
+			productDTO.setName(product.getP_name());
+			productDTO.setPrice(product.getP_price());
+			productDTO.setStatus(product.getP_status());
+			com.model.Category category = product.getCategory();
+			if (category != null) {
+			    productDTO.setCategory_id(category.getCategory_id());
+			}
 
+			if (productDetail != null) {
+				productDTO.setComponent(productDetail.getP_component());
+				productDTO.setGuide(productDetail.getP_guide());
+				productDTO.setInstruction(productDetail.getP_instruction());
+				productDTO.setMadeIn(productDetail.getP_madeIn());
+				productDTO.setObject(productDetail.getP_object());
+				productDTO.setPreservation(productDetail.getP_preservation());
+				productDTO.setStore(productDetail.getP_store());
+				productDTO.setVitue(productDetail.getP_vitue());
+			}
 
+			List<String> imageUrls = new ArrayList<>();
+			for (Product_image productImage : productImages) {
+				imageUrls.add(productImage.getImageUrl());
+			}
+			productDTO.setImageUrls(imageUrls);
 
-    @GetMapping("/products/{productId}")
-    public ResponseEntity<ProductDetailDTO> getProductDetailsById(@PathVariable Integer productId) {
-        Product product = productRepository.findById(productId).orElse(null);
-        
-        if (product == null) {
-            return ResponseEntity.notFound().build();
-        }
+			productDTOs.add(productDTO);
+		}
 
-        ProductDetailDTO productDTO = new ProductDetailDTO();
-        productDTO.setProductId(product.getProduct_id());
-        productDTO.setBrand(product.getP_brand());
-        productDTO.setName(product.getP_name());
-        productDTO.setPrice(product.getP_price());
-        productDTO.setStatus(product.getP_status());
+		return productDTOs;
+	}
 
-        Product_detail productDetail = productDetailRepository.findByProduct(product);
-        if (productDetail != null) {
-            productDTO.setComponent(productDetail.getP_component());
-            productDTO.setGuide(productDetail.getP_guide());
-            productDTO.setInstruction(productDetail.getP_instruction());
-            productDTO.setMadeIn(productDetail.getP_madeIn());
-            productDTO.setObject(productDetail.getP_object());
-            productDTO.setPreservation(productDetail.getP_preservation());
-            productDTO.setStore(productDetail.getP_store());
-            productDTO.setVirtue(productDetail.getP_vitue());
-        }
+	@GetMapping("/products/{productId}")
+	public ResponseEntity<ProductDetailDTO> getProductDetailsById(@PathVariable Integer productId) {
+		Product product = productRepository.findById(productId).orElse(null);
 
-        List<Product_image> productImages = productImageRepository.findByProduct(product);
-        List<String> imageUrls = new ArrayList<>();
-        for (Product_image productImage : productImages) {
-            imageUrls.add(productImage.getImageUrl());
-        }
-        productDTO.setImageUrls(imageUrls);
+		if (product == null) {
+			return ResponseEntity.notFound().build();
+		}
 
-        return ResponseEntity.ok(productDTO);
-    }
-    
-    //delete product
-    @DeleteMapping("/products/{productId}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Integer productId) {
-        try {
-        	// Xóa dữ liệu liên quan từ các bảng khác trước     
-        	productImageRepository.deleteById(productId);
-        	productDetailRepository.deleteById(productId); 
-            // Tiếp theo, xóa sản phẩm từ bảng product
-        	categoryRepository.deleteById(productId);
-            productRepository.deleteById(productId);
+		ProductDetailDTO productDTO = new ProductDetailDTO();
+		productDTO.setProductId(product.getProduct_id());
+		productDTO.setBrand(product.getP_brand());
+		productDTO.setName(product.getP_name());
+		productDTO.setPrice(product.getP_price());
+		productDTO.setStatus(product.getP_status());
+		productDTO.setCategory_id(product.getCategory().getCategory_id());
 
-            return ResponseEntity.ok("Sản phẩm đã được xóa thành công.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Xóa sản phẩm không thành công.");
-        }
-    }
-    
- 
-    
+		Product_detail productDetail = productDetailRepository.findByProduct(product);
+		if (productDetail != null) {
+			productDTO.setComponent(productDetail.getP_component());
+			productDTO.setGuide(productDetail.getP_guide());
+			productDTO.setInstruction(productDetail.getP_instruction());
+			productDTO.setMadeIn(productDetail.getP_madeIn());
+			productDTO.setObject(productDetail.getP_object());
+			productDTO.setPreservation(productDetail.getP_preservation());
+			productDTO.setStore(productDetail.getP_store());
+			productDTO.setVitue(productDetail.getP_vitue());
+		}
+
+		List<Product_image> productImages = productImageRepository.findByProduct(product);
+		List<String> imageUrls = new ArrayList<>();
+		for (Product_image productImage : productImages) {
+			imageUrls.add(productImage.getImageUrl());
+		}
+		productDTO.setImageUrls(imageUrls);
+
+		return ResponseEntity.ok(productDTO);
+	}
+
+//	 delete product
+	@DeleteMapping("/products/{productId}")
+	public ResponseEntity<?> deleteProduct(@PathVariable Integer productId) {
+		try {
+			Product product = productRepository.findById(productId).orElse(null);
+			Product_detail productDetail = productDetailRepository.findByProduct(product);
+			List<Product_image> productImages = productImageRepository.findByProduct(product);
+			productImageRepository.deleteAll(productImages);
+			if (productDetail != null) {
+
+				productDetailRepository.deleteById(productDetail.getDetail_id());
+			}
+			productRepository.deleteById(productId);
+
+			return ResponseEntity.ok("Sản phẩm đã được xóa thành công.");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Xóa sản phẩm không thành công.");
+		}
+	}
+	
 
 }

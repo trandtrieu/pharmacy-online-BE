@@ -49,6 +49,17 @@ public class Product_detail {
 	public Product_detail() {
 		super();
 	}
+	
+	
+	public int getDetail_id() {
+		return detail_id;
+	}
+
+
+
+	public void setDetail_id(int detail_id) {
+		this.detail_id = detail_id;
+	}
 
 
 
@@ -123,6 +134,12 @@ public class Product_detail {
 	public void setP_madeIn(String p_madeIn) {
 		this.p_madeIn = p_madeIn;
 	}
+
+
+
+
+	
+	
 	
 
 	

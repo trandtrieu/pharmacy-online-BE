@@ -1,7 +1,9 @@
 package com.model;
 
+import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,13 +46,7 @@ public class Account {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
-	
-    
-    
-    
-    
-    
-	
+
 	@OneToMany(mappedBy = "account")
     private Set<Orders> Orders;
 	
@@ -58,7 +54,8 @@ public class Account {
 	@OneToMany(mappedBy = "account")
     private Set<Content> Contents;
 	
-	
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Feedback> feedbackList;
 
 	
 	

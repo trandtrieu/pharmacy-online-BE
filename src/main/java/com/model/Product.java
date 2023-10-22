@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,14 +36,21 @@ public class Product {
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
+	@JsonIgnore
 	private Category category;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private List<Product_image> images = new ArrayList<>();
 	
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    @JsonIgnore
     private List<WishList> wishListList;
 	
+    
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Feedback> feedbackList;
 	public Product() {
 		super();
 	}
