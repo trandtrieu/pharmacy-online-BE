@@ -123,5 +123,19 @@ public class WishListController {
 		}
 	}
 
+	@GetMapping("/count/{accountId}")
+	public ResponseEntity<Long> countProductsInWishlist(@PathVariable Long accountId) {
+	    Account account = accountRepository.findById(accountId).orElse(null);
+
+	    if (account != null && account.getWishList() != null) {
+	        WishList wishlist = account.getWishList();
+	        Set<Product> products = wishlist.getProducts();
+	        long productCount = products.size(); 
+
+	        return ResponseEntity.ok(productCount);
+	    } else {
+	        return ResponseEntity.notFound().build();
+	    }
+	}
 
 }

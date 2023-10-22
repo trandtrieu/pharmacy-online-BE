@@ -26,7 +26,7 @@ public class Prescription {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private long id;
 
 	@Column
 	private String note;
@@ -56,5 +56,10 @@ public class Prescription {
 	@ManyToOne
 	@JoinColumn(name = "account_id")
 	private Account account;
+	
+	@Column
+	private LocalDate updatedDate;
 
+	@Column
+	private LocalTime updatedTime;
 }
