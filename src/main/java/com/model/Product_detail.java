@@ -26,25 +26,31 @@ public class Product_detail {
 	private int detail_id;
 
 	@Column
-	private String p_component;
+	private String p_Ingredients ;
 
 	@Column
-	private String p_vitue;
+	private String p_Indications;
 
 	@Column
-	private String p_object;
+	private String p_Contraindications ;
 
 	@Column
-	private String p_guide;
+	private String p_DosageAndUsage;
 
 	@Column
-	private String p_preservation;
+	private String p_SideEffects;
 
 	@Column
-	private String p_instruction;
+	private String p_Precautions;
 
 	@Column
-	private String p_store;
+	private String p_DrugInteractions;
+	
+	@Column
+	private String p_Storage;
+	
+	@Column
+	private String p_Packaging;
 
 	@Column
 	private String p_madeIn;

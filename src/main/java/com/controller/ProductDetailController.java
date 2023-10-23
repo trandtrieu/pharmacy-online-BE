@@ -73,14 +73,16 @@ public class ProductDetailController {
 
         Product_detail productDetail = productDetailRepository.findByProduct(product);
         if (productDetail != null) {
-            productDTO.setComponent(productDetail.getP_component());
-            productDTO.setGuide(productDetail.getP_guide());
-            productDTO.setInstruction(productDetail.getP_instruction());
+            productDTO.setIngredients(productDetail.getP_Ingredients());
+            productDTO.setIndications(productDetail.getP_Indications());
+            productDTO.setContraindications(productDetail.getP_Contraindications());
+            productDTO.setDosageAndUsage(productDetail.getP_DosageAndUsage());
+            productDTO.setSideEffects(productDetail.getP_SideEffects());
+            productDTO.setPrecautions(productDetail.getP_Precautions());
+            productDTO.setDrugInteractions(productDetail.getP_DrugInteractions());;
+            productDTO.setStorage(productDetail.getP_Storage());
+            productDTO.setPackaging(productDetail.getP_Packaging());
             productDTO.setMadeIn(productDetail.getP_madeIn());
-            productDTO.setObject(productDetail.getP_object());
-            productDTO.setPreservation(productDetail.getP_preservation());
-            productDTO.setStore(productDetail.getP_store());
-            productDTO.setVirtue(productDetail.getP_vitue());
         }
 
         List<Product_image> productImages = productImageRepository.findByProduct(product);

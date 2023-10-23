@@ -28,14 +28,16 @@ public class ProductDetailDTO {
 	private int isSale;
 	private int category_id;
 	private String category_name;
-	private String component;
-	private String guide;
-	private String instruction;
-	private String madeIn;
-	private String object;
-	private String preservation;
-	private String store;
-	private String virtue;
+	private String Ingredients;
+	private String Indications;
+	private String Contraindications;
+	private String DosageAndUsage;
+	private String SideEffects;
+	private String Precautions;
+	private String DrugInteractions;
+	private String Storage;
+	private String Packaging;
+	private String MadeIn;
 	private List<String> imageUrls;
 	
 	
