@@ -1,8 +1,19 @@
 package com.controller;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.dto.ProductDetailDTO;
 import com.model.Product;
 import com.model.Product_detail;
@@ -10,9 +21,6 @@ import com.model.Product_image;
 import com.repository.ProductDetailRepository;
 import com.repository.ProductImageRepository;
 import com.repository.ProductRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -54,6 +62,30 @@ public class ProductDetailController {
         List<Product> products = productRepository.findProductsByCategoryId(category_id);
 
         return products.stream()
+            .map(product -> createProductDetailDTO(product))
+            .collect(Collectors.toList());
+    }
+    
+//    public ResponseEntity<Long> countProductByCategory(@PathVariable Integer category_id){
+//    	
+//    }
+    
+    
+    @GetMapping("/products/random")
+    public List<ProductDetailDTO> getRandomProducts() {
+        List<Product> products = productRepository.findAll();
+        if (products.size() <= 5) {
+            return products.stream()
+                .map(product -> createProductDetailDTO(product))
+                .collect(Collectors.toList());
+        }
+
+        Random random = new Random();
+        Collections.shuffle(products, random);
+
+        List<Product> randomProducts = products.subList(0, 5);
+
+        return randomProducts.stream()
             .map(product -> createProductDetailDTO(product))
             .collect(Collectors.toList());
     }
