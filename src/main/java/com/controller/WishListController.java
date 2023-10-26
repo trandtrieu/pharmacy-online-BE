@@ -41,8 +41,6 @@ public class WishListController {
 	@Autowired
 	private WishListService wishlistService;
 
-	
-	
 	@PostMapping("/add-wishlist")
 	public ResponseEntity<String> addToWishlist(@RequestParam Long accountId, @RequestParam int productId) {
 		try {
@@ -125,17 +123,17 @@ public class WishListController {
 
 	@GetMapping("/count/{accountId}")
 	public ResponseEntity<Long> countProductsInWishlist(@PathVariable Long accountId) {
-	    Account account = accountRepository.findById(accountId).orElse(null);
+		Account account = accountRepository.findById(accountId).orElse(null);
 
-	    if (account != null && account.getWishList() != null) {
-	        WishList wishlist = account.getWishList();
-	        Set<Product> products = wishlist.getProducts();
-	        long productCount = products.size(); 
+		if (account != null && account.getWishList() != null) {
+			WishList wishlist = account.getWishList();
+			Set<Product> products = wishlist.getProducts();
+			long productCount = products.size();
 
-	        return ResponseEntity.ok(productCount);
-	    } else {
-	        return ResponseEntity.notFound().build();
-	    }
+			return ResponseEntity.ok(productCount);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 }

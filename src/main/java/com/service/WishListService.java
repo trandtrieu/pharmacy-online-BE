@@ -21,21 +21,27 @@ public class WishListService {
 	private ProductRepository productRepository;
 
 	public void addToWishlist(Long accountId, int productId) {
-		Account account = accountRepository.findById(accountId).orElse(null);
-		Product product = productRepository.findById(productId).orElse(null);
+	    Account account = accountRepository.findById(accountId).orElse(null);
+	    Product product = productRepository.findById(productId).orElse(null);
 
-		if (account != null && product != null) {
-			if (account.getWishList() == null) {
-				account.setWishList(new WishList());
-			}
-			WishList wishList = account.getWishList();
-			wishList.addProduct(product);
-			wishList.setAccount(account);
-			wishList.setCreatedDate(new Date());
-			accountRepository.save(account);
-		}
+	    if (account != null && product != null) {
+	        WishList wishList = account.getWishList();
+	        if (wishList == null) {
+	            wishList = new WishList();
+	            wishList.setAccount(account);
+	            wishList.setCreatedDate(new Date());
+	            account.setWishList(wishList);
+	        }
+
+	        // Kiểm tra xem sản phẩm đã tồn tại trong danh sách sản phẩm của wishlist hay chưa
+	        boolean productAlreadyInWishlist = wishList.getProducts().contains(product);
+
+	        if (!productAlreadyInWishlist) {
+	            wishList.addProduct(product);
+	            accountRepository.save(account);
+	        }
+	        // Không cần xử lý nếu sản phẩm đã tồn tại trong danh sách
+	    }
 	}
-	
-	
-	
+
 }

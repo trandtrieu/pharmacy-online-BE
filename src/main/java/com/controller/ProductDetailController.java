@@ -66,15 +66,21 @@ public class ProductDetailController {
             .collect(Collectors.toList());
     }
     
-//    public ResponseEntity<Long> countProductByCategory(@PathVariable Integer category_id){
-//    	
-//    }
+
+    @GetMapping("/products/count")
+    public int countProductsByCategoryId(@RequestParam("category_id") Long category_id) {
+        List<Product> products = productRepository.findProductsByCategoryId(category_id);
+        int productCount = products.size();
+
+        return productCount;
+    }
+
     
     
     @GetMapping("/products/random")
     public List<ProductDetailDTO> getRandomProducts() {
         List<Product> products = productRepository.findAll();
-        if (products.size() <= 5) {
+        if (products.size() <= 4) {
             return products.stream()
                 .map(product -> createProductDetailDTO(product))
                 .collect(Collectors.toList());
@@ -83,7 +89,7 @@ public class ProductDetailController {
         Random random = new Random();
         Collections.shuffle(products, random);
 
-        List<Product> randomProducts = products.subList(0, 5);
+        List<Product> randomProducts = products.subList(0, 4);
 
         return randomProducts.stream()
             .map(product -> createProductDetailDTO(product))

@@ -53,7 +53,7 @@ public class PrescriptionDTO {
 		this.name = name;
 		this.account_id = account_id;
 		this.createdDate = createdDate;
-		this.createdTime = createdTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+		this.createdTime = createdTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 	}
 
 	public PrescriptionDTO(long id, String note, String imageUrls, int status, String name, long account_id,
@@ -82,7 +82,7 @@ public class PrescriptionDTO {
 		this.email = email;
 		this.account_id = account_id;
 		this.createdDate = createdDate;
-		this.createdTime = createdTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+		this.createdTime = createdTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 	}
 
 	public PrescriptionDTO(long id, String note, String imageUrls, int status, String name, String phone, String email,
@@ -97,9 +97,9 @@ public class PrescriptionDTO {
 		this.email = email;
 		this.account_id = account_id;
 		this.createdDate = createdDate;
-		this.createdTime = createdTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+		this.createdTime = createdTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 		this.updatedDate = updatedDate;
-		this.updatedTime = updatedTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+		this.updatedTime = updatedTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 	}
 
 }

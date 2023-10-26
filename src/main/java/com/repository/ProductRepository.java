@@ -11,5 +11,9 @@ import com.model.Product;
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 	
 	@Query("SELECT p FROM Product p WHERE p.category.category_id = :category_id")
+	
     List<Product> findProductsByCategoryId(@Param("category_id") Long categoryId);	
+	
+	
+
 }
