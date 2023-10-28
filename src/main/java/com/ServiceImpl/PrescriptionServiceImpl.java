@@ -28,44 +28,42 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	public Prescription createPrescription(Prescription prescription, Long accountId) {
 		Account account = accountRepository.findById(accountId)
 				.orElseThrow(() -> new EntityNotFoundException("Không tìm thấy tài khoản với ID: " + accountId));
-
 		prescription.setAccount(account);
 
 		return prescriptionRepository.save(prescription);
 	}
-	
-	
+
 	@Override
 	public Prescription updatePrescription(Prescription prescription, Long prescriptionId) {
-	    Prescription existingPrescription = prescriptionRepository.findPrescriptionById(prescriptionId);
-	    if (existingPrescription == null) {
-	        throw new EntityNotFoundException("Prescription with ID " + prescriptionId + " not found.");
-	    }
+		Prescription existingPrescription = prescriptionRepository.findPrescriptionById(prescriptionId);
+		if (existingPrescription == null) {
+			throw new EntityNotFoundException("Prescription with ID " + prescriptionId + " not found.");
+		}
 
-	    // Update prescription properties
-	    existingPrescription.setNote(prescription.getNote());
-	    existingPrescription.setImageUrls(prescription.getImageUrls());
-	    existingPrescription.setStatus(prescription.getStatus());
-	    existingPrescription.setName(prescription.getName());
-	    existingPrescription.setPhone(prescription.getPhone());
-	    existingPrescription.setEmail(prescription.getEmail());
-	    existingPrescription.setUpdatedDate(LocalDate.now());
-	    existingPrescription.setUpdatedTime(LocalTime.now());
+		existingPrescription.setNote(prescription.getNote());
+		existingPrescription.setImageUrls(prescription.getImageUrls());
+		existingPrescription.setStatus(prescription.getStatus());
+		existingPrescription.setName(prescription.getName());
+		existingPrescription.setPhone(prescription.getPhone());
+		existingPrescription.setEmail(prescription.getEmail());
+		existingPrescription.setUpdatedDate(LocalDate.now());
+		existingPrescription.setUpdatedTime(LocalTime.now());
 
-	    return prescriptionRepository.save(existingPrescription);
+		return prescriptionRepository.save(existingPrescription);
 	}
 
 	@Override
 	public Prescription getPrescriptionById(Long prescriptionId) {
-	    return prescriptionRepository.findById(prescriptionId).orElse(null);
+		return prescriptionRepository.findById(prescriptionId).orElse(null);
 	}
+
 	@Override
 	public boolean deletePrescription(Long prescriptionId) {
-	    Optional<Prescription> prescriptionOptional = prescriptionRepository.findById(prescriptionId);
-	    if (prescriptionOptional.isPresent()) {
-	        prescriptionRepository.delete(prescriptionOptional.get());
-	        return true;
-	    }
-	    return false;
+		Optional<Prescription> prescriptionOptional = prescriptionRepository.findById(prescriptionId);
+		if (prescriptionOptional.isPresent()) {
+			prescriptionRepository.delete(prescriptionOptional.get());
+			return true;
+		}
+		return false;
 	}
 }
