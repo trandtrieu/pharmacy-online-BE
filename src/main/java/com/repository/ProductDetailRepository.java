@@ -9,4 +9,6 @@ public interface ProductDetailRepository extends JpaRepository<Product_detail, I
 
 	Product_detail findByProduct(Product product);
 
+	
+	
 }

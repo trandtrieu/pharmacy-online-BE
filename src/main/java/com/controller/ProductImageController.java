@@ -24,5 +24,8 @@ public class ProductImageController {
 		return productRepository.findAll();
 
 	}
+	
+	
+	
 
 }

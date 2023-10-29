@@ -1,13 +1,18 @@
 package com.dto;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class ProductDetailDTO {
@@ -15,6 +20,8 @@ public class ProductDetailDTO {
 	private String brand;
 	private String name;
 	private BigDecimal price;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	private Date createdDate;
 	private int status;
 	private int category_id;
 	private String category_name;
@@ -80,6 +87,12 @@ public class ProductDetailDTO {
 	}
 	public void setGuide(String guide) {
 		this.guide = guide;
+	}
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 	public String getInstruction() {
 		return instruction;

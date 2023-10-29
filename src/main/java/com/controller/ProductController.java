@@ -22,23 +22,23 @@ public class ProductController {
 	@Autowired
 	private ProductRepository productRepository;
 
-	@Autowired
-	private ProductService productService;
+//	@Autowired
+//	private ProductService productService;
 
 	@GetMapping("/products/test")
 	public List<Product> getAllProducts() {
 		return productRepository.findAll();
 	}
 
-	@GetMapping("/products/search")
-	public ResponseEntity<List<Product>> searchProduct(@RequestParam("keyword") String keyword) {
-		List<Product> list = productService.searchProduct(keyword);
-		return ResponseEntity.ok(list);
-	}
-
-	 @GetMapping("/range")
-	    public ResponseEntity<List<Product>> getListProductByPriceRange(@RequestParam("id") long id,@RequestParam("min") int min, @RequestParam("max") int max){
-	        List<Product> list = productService.getListByRange(id, min, max);
-	        return ResponseEntity.ok(list);
-	    }
+//	@GetMapping("/products/search")
+//	public ResponseEntity<List<Product>> searchProduct(@RequestParam("keyword") String keyword) {
+//		List<Product> list = productService.searchProduct(keyword);
+//		return ResponseEntity.ok(list);
+//	}
+//
+//	 @GetMapping("/range")
+//	    public ResponseEntity<List<Product>> getListProductByPriceRange(@RequestParam("id") long id,@RequestParam("min") int min, @RequestParam("max") int max){
+//	        List<Product> list = productService.getListByRange(id, min, max);
+//	        return ResponseEntity.ok(list);
+//	    }
 }

@@ -15,6 +15,7 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ProductRepository productRepository;
 
+
 	@Override
 	public List<Product> searchProduct(String keyword) {
 		List<Product> list = productRepository.searchProduct(keyword);
@@ -27,6 +28,15 @@ public class ProductServiceImpl implements ProductService {
 		return list;
 	}
 	
-	
+//	@Override
+//	public Long countByRange(BigDecimal minPrice, BigDecimal maxPrice) {
+//	    return productRepository.countProductsInPriceRange(minPrice, maxPrice);
+//	}
+//
+//	@Override
+//	public Long countProductsByKeywordAndPriceRange(String keyword, BigDecimal minPrice, BigDecimal maxPrice) {
+//        return productRepository.countProductsByKeywordAndPriceRange(keyword, minPrice, maxPrice);
+//    }
+
 
 }
