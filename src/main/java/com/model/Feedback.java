@@ -1,10 +1,11 @@
 package com.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.time.LocalTime;
+import java.util.List;
 
-import javax.xml.stream.events.Comment;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,20 +31,24 @@ import lombok.Setter;
 public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long feedback_id;
+    private int feedback_id;
     
-    @Column(name = "rating")
+    public Feedback() {
+		super();
+	}
+
+	@Column(name = "rating")
     private int rating;
     
     @Column(name = "comment")
     private String comment;
     
     @Column(name = "created_at")
-    private LocalDateTime created_at;
+    private LocalTime created_at_time;
     
-    @Column(name = "like_count")
-    private int like_count;
-    
+    @Column(name = "created_date")
+    private LocalDate created_date;
+ 
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
@@ -52,8 +57,95 @@ public class Feedback {
     @JoinColumn(name = "user_id")
     private Account user;
     
-    @OneToMany(mappedBy = "feedback")
-    private Set<Comment> comments;
+    
+    @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL)
+    private List<Reply> replyList;
+
+	public Feedback(int feedback_id, int rating, String comment, LocalTime created_at_time, LocalDate created_date,
+			Product product, Account user, List<Reply> replyList) {
+		super();
+		this.feedback_id = feedback_id;
+		this.rating = rating;
+		this.comment = comment;
+		this.created_at_time = created_at_time;
+		this.created_date = created_date;
+		this.product = product;
+		this.user = user;
+		this.replyList = replyList;
+	}
+
+	public int getFeedback_id() {
+		return feedback_id;
+	}
+
+	public void setFeedback_id(int feedback_id) {
+		this.feedback_id = feedback_id;
+	}
+
+	public int getRating() {
+		return rating;
+	}
+
+	public void setRating(int rating) {
+		this.rating = rating;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public LocalTime getCreated_at_time() {
+		return created_at_time;
+	}
+
+	public void setCreated_at_time(LocalTime created_at_time) {
+		this.created_at_time = created_at_time;
+	}
+
+	public LocalDate getCreated_date() {
+		return created_date;
+	}
+
+	public void setCreated_date(LocalDate created_date) {
+		this.created_date = created_date;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public Account getUser() {
+		return user;
+	}
+
+	public void setUser(Account user) {
+		this.user = user;
+	}
+
+	public List<Reply> getReplyList() {
+		return replyList;
+	}
+
+	public void setReplyList(List<Reply> replyList) {
+		this.replyList = replyList;
+	}
+
+
+
+	
+
+
+    
+//    @OneToMany(mappedBy = "feedback")
+//    private Set<Comment> comments;
     
 }
 

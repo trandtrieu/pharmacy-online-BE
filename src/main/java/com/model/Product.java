@@ -46,11 +46,32 @@ public class Product {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     @JsonIgnore
     private List<WishList> wishListList;
-	
     
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Feedback> feedbackList;
+    
+//    @OneToMany(mappedBy = "", cascade = CascadeType.ALL)
+//    private List<Feedback> feedbackList;
+    
+    public List<WishList> getWishListList() {
+		return wishListList;
+	}
+
+	public void setWishListList(List<WishList> wishListList) {
+		this.wishListList = wishListList;
+	}
+
+	public List<Feedback> getFeedbackList() {
+		return feedbackList;
+	}
+
+	public void setFeedbackList(List<Feedback> feedbackList) {
+		this.feedbackList = feedbackList;
+	}
+
+
+    
 	public Product() {
 		super();
 	}
@@ -122,5 +143,20 @@ public class Product {
 	public void setImages(List<Product_image> images) {
 		this.images = images;
 	}
+
+	public Product(int product_id, String p_name, BigDecimal p_price, String p_brand, int p_status, Category category,
+			List<Product_image> images, List<WishList> wishListList, List<Feedback> feedbackList) {
+		super();
+		this.product_id = product_id;
+		this.p_name = p_name;
+		this.p_price = p_price;
+		this.p_brand = p_brand;
+		this.p_status = p_status;
+		this.category = category;
+		this.images = images;
+		this.wishListList = wishListList;
+		this.feedbackList = feedbackList;
+	}
+	
 
 }
