@@ -51,7 +51,7 @@ public class PrescriptionController {
 	}
 
 	@PostMapping("/create")
-	public ResponseEntity<String> createPrescription(@ModelAttribute Prescription prescription,
+	public ResponseEntity<PrescriptionDTO> createPrescription(@ModelAttribute Prescription prescription,
 			@RequestParam("account_id") Long accountId, @RequestParam("imageFile") MultipartFile imageFile) {
 		LocalDate createdDate = LocalDate.now();
 		LocalTime createdTime = LocalTime.now();
@@ -61,15 +61,15 @@ public class PrescriptionController {
 		if (imageFile != null) {
 			ResponseEntity<String> uploadResponse = uploadImage(imageFile);
 			if (uploadResponse.getStatusCode() != HttpStatus.OK) {
-				return uploadResponse;
+//				return uploadResponse;
 			}
 			prescription.setImageUrls(imageFile.getOriginalFilename());
 		}
 
 		Prescription createdPrescription = prescriptionService.createPrescription(prescription, accountId);
-//		sendConfirmationEmail(createdPrescription);
+		sendConfirmationEmail(createdPrescription);
 
-		return new ResponseEntity<String>("success", HttpStatus.CREATED);
+		return new ResponseEntity<>(createPrescriptionDTO(createdPrescription), HttpStatus.CREATED);
 	}
 
 	@PutMapping("/update/{prescriptionId}")
@@ -138,20 +138,27 @@ public class PrescriptionController {
 
 	@PostMapping("/uploadImage")
 	public ResponseEntity<String> uploadImage(@RequestParam("imageFile") MultipartFile imageFile) {
-		if (imageFile != null) {
-			String uploadFolderPath = "D:/Documents/OJT/mock-project/pharmacy-online-fe/public/assets/images";
-			String fileName = imageFile.getOriginalFilename();
+	    if (imageFile != null) {
+	        String uploadFolderPath1 = "D:/Documents/OJT/mock-project/pharmacy-online-fe/public/assets/images"; // Thay đổi thành đường dẫn của thư mục đầu tiên
+	        String uploadFolderPath2 = "D:/Documents/OJT/mock-project/pharmacy-online-admin/public/assets/images"; // Thay đổi thành đường dẫn của thư mục thứ hai
+	        String fileName = imageFile.getOriginalFilename();
 
-			try {
-				Path imagePath = Paths.get(uploadFolderPath, fileName);
-				Files.write(imagePath, imageFile.getBytes());
-				return new ResponseEntity<>("Image uploaded successfully", HttpStatus.OK);
-			} catch (IOException e) {
-				return new ResponseEntity<>("Failed to upload the image", HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		} else {
-			return new ResponseEntity<>("No image file provided", HttpStatus.BAD_REQUEST);
-		}
+	        try {
+	            // Lưu ảnh vào thư mục đầu tiên
+	            Path imagePath1 = Paths.get(uploadFolderPath1, fileName);
+	            Files.write(imagePath1, imageFile.getBytes());
+
+	            // Lưu ảnh vào thư mục thứ hai
+	            Path imagePath2 = Paths.get(uploadFolderPath2, fileName);
+	            Files.write(imagePath2, imageFile.getBytes());
+
+	            return new ResponseEntity<>("Image uploaded successfully to both folders", HttpStatus.OK);
+	        } catch (IOException e) {
+	            return new ResponseEntity<>("Failed to upload the image", HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    } else {
+	        return new ResponseEntity<>("No image file provided", HttpStatus.BAD_REQUEST);
+	    }
 	}
 
 }
