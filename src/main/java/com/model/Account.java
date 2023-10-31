@@ -67,4 +67,11 @@ public class Account {
 	
     @OneToMany(mappedBy = "account")
     private List<Prescription> prescriptions;
+    
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Feedback> feedbackList;
+    
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Reply> Replys ;
 }

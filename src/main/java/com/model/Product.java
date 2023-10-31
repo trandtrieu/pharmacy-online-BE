@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
@@ -71,4 +72,8 @@ public class Product {
 	@ManyToMany(mappedBy = "products")
 	private Set<WishList> wishLists = new HashSet<>();
 
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Feedback> feedbackList;
+	
 }
