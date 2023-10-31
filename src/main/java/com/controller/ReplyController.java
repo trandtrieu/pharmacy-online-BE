@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.ReplyDTO;
+import com.model.Account;
 import com.model.Feedback;
+import com.model.Product;
 import com.model.Reply;
 import com.repository.AccountRepository;
 import com.repository.FeedbackRepository;
@@ -49,7 +51,7 @@ public class ReplyController {
 			replydto.setFeedback_id(feedback.getFeedback_id());
 			LocalDate created_date = LocalDate.now();
 			LocalTime create_time = LocalTime.now();
-			
+
 			reply.setCreated_date(created_date);
 			reply.setCreated_at_time(create_time);
 			replydto.setCreated_date(reply.getCreated_date());
@@ -68,32 +70,41 @@ public class ReplyController {
 	}
 
 	// add reply
-	@PostMapping("/feedback/reply/add")
-	public ResponseEntity<ReplyDTO> addReply(@RequestBody ReplyDTO ReplyDTO) {
+	@PostMapping("feedback/{feedbackId}/reply/{user_id}/add")
+	public ResponseEntity<?> addReply(@RequestBody ReplyDTO ReplyDTO, @PathVariable int feedbackId,
+			@PathVariable long user_id) {
 		// Tạo một đối tượng Reply và thiết lập thông tin từ DTO
-		Reply reply = new Reply();
-		reply.setReply_id(ReplyDTO.getReply_id());
-		reply.setReply_feedback(ReplyDTO.getReply_feedback());
-		LocalDate created_date = LocalDate.now();
-		LocalTime create_time = LocalTime.now();
-		
-		reply.setCreated_date(created_date);
-		reply.setCreated_at_time(create_time);
-		ReplyDTO.setCreated_date(reply.getCreated_date());
-		// Thiết lập user_id dựa trên cách xác định người dùng trong ứng dụng của bạn
-		if (reply.getCreated_at_time() != null) {
-
-			ReplyDTO.setCreated_at_time(reply.getCreated_at_time().format(DateTimeFormatter.ofPattern("HH:mm")));
+		Account account = accountRepository.findById(user_id).orElse(null);
+		if (account == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 		}
-		reply.setAccount(accountRepository.findById(ReplyDTO.getUser_id()).orElse(null));
-		ReplyDTO.setUser_name(reply.getAccount().getName());
-		reply.setFeedback(feedbackRepository.findById(ReplyDTO.getFeedback_id()).orElse(null));
+		ReplyDTO.setUser_id(account.getId());
+		Feedback feedback = feedbackRepository.findById(feedbackId).orElse(null);
+		if (feedback != null) {
 
-		replyRepository.save(reply);
+			Reply reply = new Reply();
+//			reply.setReply_id(ReplyDTO.getReply_id());
+			reply.setReply_feedback(ReplyDTO.getReply_feedback());
+			LocalDate created_date = LocalDate.now();
+			LocalTime create_time = LocalTime.now();
+
+			reply.setCreated_date(created_date);
+			reply.setCreated_at_time(create_time);
+			ReplyDTO.setCreated_date(reply.getCreated_date());
+			// Thiết lập user_id dựa trên cách xác định người dùng trong ứng dụng của bạn
+			if (reply.getCreated_at_time() != null) {
+
+				ReplyDTO.setCreated_at_time(reply.getCreated_at_time().format(DateTimeFormatter.ofPattern("HH:mm")));
+			}
+			ReplyDTO.setFeedback_id(feedbackId);
+			reply.setAccount(accountRepository.findById(user_id).orElse(null));
+			
+			ReplyDTO.setUser_name(reply.getAccount().getName());
+			reply.setFeedback(feedbackRepository.findById(ReplyDTO.getFeedback_id()).orElse(null));
+			replyRepository.save(reply);
+		}
 
 		return new ResponseEntity<>(ReplyDTO, HttpStatus.CREATED);
 	}
-	
-	
 
 }

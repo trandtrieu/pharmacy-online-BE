@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ import com.model.Product;
 import com.repository.AccountRepository;
 import com.repository.FeedbackRepository;
 import com.repository.ProductRepository;
-import com.services.FeedbackService;
 import com.services.ProductService;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -46,11 +46,14 @@ public class FeedbackController {
 
 	@GetMapping("/products/{productId}/feedbacks")
 	public List<FeedbackDTO> getProductFeedbacks(@PathVariable Integer productId) {
-		List<FeedbackDTO> feedbackDTOs = new ArrayList<>();
+		List<FeedbackDTO> feedbackDTOs = new ArrayList<>(); 
 
 		Product product = productService.getProductById(productId);
 		if (product != null) {
 			List<Feedback> feedbacks = product.getFeedbackList();
+			feedbacks.sort(Comparator.comparing(Feedback::getFeedback_id)
+				    .thenComparing(Feedback::getCreated_at_time, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+
 			for (Feedback feedback : feedbacks) {
 				FeedbackDTO feedbackDTO = new FeedbackDTO();
 				feedbackDTO.setFeedback_id(feedback.getFeedback_id());
@@ -82,7 +85,7 @@ public class FeedbackController {
 			return new ResponseEntity<>("Feedback not found", HttpStatus.NOT_FOUND);
 		}
 		feedbackRepository.delete(feedback);
-		return new ResponseEntity<>("Feedback deleted successfully", HttpStatus.OK); 
+		return new ResponseEntity<>("Feedback deleted successfully", HttpStatus.OK);
 	}
 
 	// add feedback
@@ -106,8 +109,8 @@ public class FeedbackController {
 
 			if (feedback.getCreated_at_time() != null) {
 
-				feedbackDTO.setCreated_at_time(
-						feedback.getCreated_at_time().format(DateTimeFormatter.ofPattern("HH:mm")));
+				feedbackDTO
+						.setCreated_at_time(feedback.getCreated_at_time().format(DateTimeFormatter.ofPattern("HH:mm")));
 			}
 
 			feedback.setUser(accountRepository.findById(user_id).orElse(account));
@@ -121,32 +124,31 @@ public class FeedbackController {
 
 		return new ResponseEntity<>(feedbackDTO, HttpStatus.OK);
 	}
-	
-	
-	//calculate average rating
-	@GetMapping("/product/{productId}/averageRating")
+
+	// calculate average rating
+	@GetMapping("product/{productId}/averageRating")
 	public double getAverageRating(@PathVariable Integer productId) {
 		double average = 0;
 		Product product = productService.getProductById(productId);
 		if (product != null) {
-	        List<Feedback> feedbacks = product.getFeedbackList();
-	        int total = feedbacks.size();
-	        if (total > 0) {
-	            double totalRating = 0;
-	            
-	            for (Feedback feedback : feedbacks) {
-	                totalRating += feedback.getRating();
-	            }
-	            
-	            average = ((double) Math.round((totalRating / total)* 10)/10) ;
-	        }
-	    }
+			List<Feedback> feedbacks = product.getFeedbackList();
+			int total = feedbacks.size();
+			if (total > 0) {
+				double totalRating = 0;
+
+				for (Feedback feedback : feedbacks) {
+					totalRating += feedback.getRating();
+				}
+
+				average = ((double) Math.round((totalRating / total) * 10) / 10);
+			}
+		}
 
 		return average;
 	}
-	
+
 	//
-	@GetMapping("/product/{productId}/{rating}")
+	@GetMapping("product/{productId}/{rating}")
 	public int getTotalFeedbackByRating(@PathVariable int productId, @PathVariable int rating) {
 		return feedbackRepository.countByRatingAndProductId(rating, productId);
 	}
