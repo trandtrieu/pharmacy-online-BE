@@ -36,7 +36,12 @@ public class PrescriptionAdminController {
                         .thenComparing(PrescriptionDTO::getCreatedTime))
                 .collect(Collectors.toList());
     }
-
+	@GetMapping("/view/{prescriptionId}")
+	public ResponseEntity<PrescriptionDTO> viewPrescriptionDetails(@PathVariable Long prescriptionId) {
+		Prescription prescription = prescriptionService.getPrescriptionById(prescriptionId);
+		return (prescription != null) ? new ResponseEntity<>(createPrescriptionDTO(prescription), HttpStatus.OK)
+				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
     @PostMapping("/create")
     public ResponseEntity<PrescriptionDTO> createPrescription(@RequestBody Prescription prescription,
                                                              @RequestParam("account_id") Long accountId) {
