@@ -4,9 +4,9 @@ import java.util.Set;
 
 import com.model.Content;
 import com.model.Orders;
-import com.model.Role;
 import com.model.WishList;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +35,7 @@ public class AccountDTO {
 
 	private String phone;
 
-	private Role role;
+	private String role;
 
 	private Set<Orders> Orders;
 
@@ -46,7 +46,7 @@ public class AccountDTO {
 //	private Cart cart;
 
 	public AccountDTO(long id, String name, String mail, String password, String address, String dob, String avatar,
-			String phone, Role role, Set<com.model.Orders> orders, Set<Content> contents, WishList wishList) {
+			String phone, String role, Set<com.model.Orders> orders, Set<Content> contents, WishList wishList) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -63,7 +63,7 @@ public class AccountDTO {
 	}
 
 	public AccountDTO(long id, String name, String mail, String password, String address, String dob, String avatar,
-			String phone, Role role) {
+			String phone, String role) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -77,7 +77,7 @@ public class AccountDTO {
 	}
 
 	public AccountDTO(long id, String name, String mail, String password, String address, String dob, String avatar,
-			String phone, Role role, Set<Content> contents) {
+			String phone, String Role, Set<Content> contents) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -87,12 +87,12 @@ public class AccountDTO {
 		this.dob = dob;
 		this.avatar = avatar;
 		this.phone = phone;
-		this.role = role;
+		this.role = Role;
 		Contents = contents;
 	}
 
 	public AccountDTO(long id, String name, String mail, String password, String address, String dob, String avatar,
-			String phone, Role role, Set<com.model.Orders> orders, Set<Content> contents) {
+			String phone, String role, Set<com.model.Orders> orders, Set<Content> contents) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -108,7 +108,7 @@ public class AccountDTO {
 	}
 
 	public AccountDTO(long id, String name, String mail, String password, String address, String dob, String avatar,
-			String phone, Role role, Set<Content> contents, WishList wishList) {
+			String phone, String role, Set<Content> contents, WishList wishList) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -122,5 +122,7 @@ public class AccountDTO {
 		Contents = contents;
 		this.wishList = wishList;
 	}
+	
+	
 
 }
