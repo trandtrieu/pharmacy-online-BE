@@ -25,10 +25,10 @@ public class CartAdminController {
 	private CartService cartService;
 
 	@PostMapping("/add-cart")
-	public ResponseEntity<String> addToCart(@RequestParam Long accountId, @RequestParam int productId,
-			@RequestParam int quantity) {
+	public ResponseEntity<String> addToCartByAdmin(@RequestParam Long accountId, @RequestParam int productId,
+			@RequestParam int quantity, @RequestParam int cart_type) {
 		try {
-			cartService.addToCart(accountId, productId, quantity);
+			cartService.addToCart(accountId, productId, quantity, cart_type);
 			return ResponseEntity.ok("Sản phẩm đã được thêm vào giỏ hàng.");
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body("Lỗi khi thêm sản phẩm vào giỏ hàng: " + e.getMessage());
@@ -36,8 +36,10 @@ public class CartAdminController {
 	}
 
 	@GetMapping("/get-cart")
-	public ResponseEntity<List<CartItemDTO>> getProductsInCart(@RequestParam Long accountId) {
-		List<CartItemDTO> cartItems = cartService.getCartItems(accountId);
+	public ResponseEntity<List<CartItemDTO>> getProductsInCart(@RequestParam Long accountId,
+			@RequestParam int cart_type) {
+		List<CartItemDTO> cartItems = cartService.getCartItems(accountId, cart_type);
+
 		if (cartItems.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		} else {
@@ -47,36 +49,36 @@ public class CartAdminController {
 
 	@DeleteMapping("/remove-from-cart")
 	public ResponseEntity<String> removeFromCart(@RequestParam Integer cartId) {
-	    try {
-	        cartService.removeFromCart(cartId);
-	        return ResponseEntity.ok("Sản phẩm đã được xóa khỏi giỏ hàng.");
-	    } catch (Exception e) {
-	        return ResponseEntity.badRequest().body("Lỗi khi xóa sản phẩm khỏi giỏ hàng: " + e.getMessage());
-	    }
+		try {
+			cartService.removeFromCart(cartId);
+			return ResponseEntity.ok("Sản phẩm đã được xóa khỏi giỏ hàng.");
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body("Lỗi khi xóa sản phẩm khỏi giỏ hàng: " + e.getMessage());
+		}
 	}
-	
-	
-	 @PutMapping("/update-cart")
-	  public ResponseEntity<String> updateCart(@RequestBody List<CartItemDTO> updatedCartItems) {
-	    try {
-	      cartService.updateCartItems(updatedCartItems);
-	      return ResponseEntity.ok("Cart updated successfully.");
-	    } catch (Exception e) {
-	      return ResponseEntity.badRequest().body("Error updating cart: " + e.getMessage());
-	    }
-	  }
-	 
+
+	@PutMapping("/update-cart")
+	public ResponseEntity<String> updateCart(@RequestBody List<CartItemDTO> updatedCartItems) {
+		try {
+			cartService.updateCartItems(updatedCartItems);
+			return ResponseEntity.ok("Cart updated successfully.");
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body("Error updating cart: " + e.getMessage());
+		}
+	}
+
 	 @GetMapping("/get-total-quantity-in-cart")
-	 public ResponseEntity<Integer> getTotalQuantityInCart(@RequestParam Long accountId) {
-	     int totalQuantity = cartService.getTotalQuantityInCart(accountId);
+	 public ResponseEntity<Integer> getTotalQuantityInCart(@RequestParam Long accountId, @RequestParam int cartType) {
+	     int totalQuantity = cartService.getTotalQuantityInCart(accountId, cartType);
 	     return ResponseEntity.ok(totalQuantity);
 	 }
 	 
 	 @GetMapping("/count-product-cart")
-	 public ResponseEntity<Integer> countProductsInCart(@RequestParam Long accountId) {
-	     int uniqueProductCount = cartService.countProductsInCart(accountId);
+	 public ResponseEntity<Integer> countProductsInCart(
+	         @RequestParam Long accountId,
+	         @RequestParam int cartType
+	 ) {
+	     int uniqueProductCount = cartService.countProductsInCart(accountId, cartType);
 	     return ResponseEntity.ok(uniqueProductCount);
 	 }
-
 }
-

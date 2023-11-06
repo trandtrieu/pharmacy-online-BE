@@ -34,4 +34,11 @@ public class CartItem {
 
 	@Column(name = "quantity")
 	private int quantity;
+	
+	
+	@Column
+	private int cart_type; 
+
+	
+	
 }

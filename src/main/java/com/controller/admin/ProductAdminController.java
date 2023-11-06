@@ -90,7 +90,7 @@ public class ProductAdminController {
 		productDTO.setPrice(product.getP_price());
 		productDTO.setStatus(product.getP_status());
 		productDTO.setCreatedDate(product.getCreatedDate());
-		productDTO.setIsSale(product.getP_isSale());
+		productDTO.setType(product.getP_type());
 		productDTO.setQuantity(product.getP_quantity());
 		productDTO.setCategory_id(product.getCategory().getCategory_id());
 		productDTO.setCategory_name(product.getCategory().getCategory_name());

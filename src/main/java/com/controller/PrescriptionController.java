@@ -67,7 +67,7 @@ public class PrescriptionController {
 		}
 
 		Prescription createdPrescription = prescriptionService.createPrescription(prescription, accountId);
-		sendConfirmationEmail(createdPrescription);
+//		sendConfirmationEmail(createdPrescription);
 
 		return new ResponseEntity<>(createPrescriptionDTO(createdPrescription), HttpStatus.CREATED);
 	}
@@ -144,11 +144,9 @@ public class PrescriptionController {
 	        String fileName = imageFile.getOriginalFilename();
 
 	        try {
-	            // Lưu ảnh vào thư mục đầu tiên
 	            Path imagePath1 = Paths.get(uploadFolderPath1, fileName);
 	            Files.write(imagePath1, imageFile.getBytes());
 
-	            // Lưu ảnh vào thư mục thứ hai
 	            Path imagePath2 = Paths.get(uploadFolderPath2, fileName);
 	            Files.write(imagePath2, imageFile.getBytes());
 

@@ -2,10 +2,8 @@ package com.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,10 @@ import com.repository.CartItemRepository;
 import com.repository.CartRepository;
 import com.repository.ProductRepository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+
 @Service
 public class CartService {
 
@@ -36,8 +38,9 @@ public class CartService {
 	private ProductRepository productRepository;
 	@Autowired
 	private CartItemRepository cartItemRepository;
-
-	public void addToCart(Long accountId, int productId, int quantity) {
+    @PersistenceContext
+    private EntityManager entityManager;
+	public void addToCart(Long accountId, int productId, int quantity, int cart_type) {
 		Account account = accountRepository.findById(accountId)
 				.orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản"));
 
@@ -46,23 +49,22 @@ public class CartService {
 			cart = new Cart();
 			cart.setAccount(account);
 		}
+
 		Product product = productRepository.findById(productId)
 				.orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
 
-		boolean productExistsInCart = false;
-		for (CartItem cartItem : cart.getCartItems()) {
-			if (cartItem.getProduct().equals(product)) {
-				int newQuantity = cartItem.getQuantity() + quantity;
-				cartItem.setQuantity(newQuantity);
-				productExistsInCart = true;
-				break;
-			}
-		}
+		// Check if there's an existing cart item with the same cart_type and product
+		CartItem existingCartItem = cart.getCartItems().stream()
+				.filter(item -> item.getCart_type() == cart_type && item.getProduct().equals(product)).findFirst()
+				.orElse(null);
 
-		if (!productExistsInCart) {
+		if (existingCartItem != null) {
+			existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+		} else {
 			CartItem cartItem = new CartItem();
 			cartItem.setProduct(product);
 			cartItem.setQuantity(quantity);
+			cartItem.setCart_type(cart_type);
 			cartItem.setCart(cart);
 			cart.getCartItems().add(cartItem);
 		}
@@ -70,7 +72,7 @@ public class CartService {
 		cartRepository.save(cart);
 	}
 
-	public List<CartItemDTO> getCartItems(Long accountId) {
+	public List<CartItemDTO> getCartItems(Long accountId, int cart_type) {
 		Account account = accountRepository.findById(accountId).orElse(null);
 
 		if (account != null && account.getCart() != null) {
@@ -79,21 +81,22 @@ public class CartService {
 
 			List<CartItemDTO> productDTOs = new ArrayList<>();
 			for (CartItem cartItem : cartItems) {
-				Product product = cartItem.getProduct();
-				ProductDetailDTO productDetailDTO = new ProductDetailDTO();
-				productDetailDTO.setProductId(product.getProduct_id());
-				productDetailDTO.setName(product.getP_name());
-				productDetailDTO.setPrice(product.getP_price());
-				productDetailDTO.setBrand(product.getP_brand());
-				productDetailDTO.setCategory_id(product.getCategory().getCategory_id());
-				productDetailDTO.setCategory_name(product.getCategory().getCategory_name());
-				List<String> imageUrls = product.getImages().stream().map(Product_image::getImageUrl)
-						.collect(Collectors.toList());
-				productDetailDTO.setImageUrls(imageUrls);
-				CartItemDTO productWithQuantity = new CartItemDTO(cartItem.getId(), productDetailDTO,
-						cartItem.getQuantity());
-				productDTOs.add(productWithQuantity);
-
+				if (cartItem.getCart_type() == cart_type) {
+					Product product = cartItem.getProduct();
+					ProductDetailDTO productDetailDTO = new ProductDetailDTO();
+					productDetailDTO.setProductId(product.getProduct_id());
+					productDetailDTO.setName(product.getP_name());
+					productDetailDTO.setPrice(product.getP_price());
+					productDetailDTO.setBrand(product.getP_brand());
+					productDetailDTO.setCategory_id(product.getCategory().getCategory_id());
+					productDetailDTO.setCategory_name(product.getCategory().getCategory_name());
+					List<String> imageUrls = product.getImages().stream().map(Product_image::getImageUrl)
+							.collect(Collectors.toList());
+					productDetailDTO.setImageUrls(imageUrls);
+					CartItemDTO productWithQuantity = new CartItemDTO(cartItem.getId(), productDetailDTO,
+							cartItem.getQuantity(), cartItem.getCart_type());
+					productDTOs.add(productWithQuantity);
+				}
 			}
 
 			return productDTOs;
@@ -106,9 +109,50 @@ public class CartService {
 		CartItem cartItem = cartItemRepository.findById(cartId)
 				.orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm trong giỏ hàng"));
 
-		// Xóa cartItem khỏi giỏ hàng
 		cartItemRepository.delete(cartItem);
 	}
+
+	@Transactional
+	public void removeAllCartItems(List<CartItemDTO> cartItems) {
+		try {
+			for (CartItemDTO cartItemDTO : cartItems) {
+				int cartItemId = cartItemDTO.getCartId();
+				Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
+
+				if (cartItemOptional.isPresent()) {
+					CartItem cartItem = cartItemOptional.get();
+					cartItemRepository.delete(cartItem);
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Error removing cart items: " + e.getMessage(), e);
+		}
+	}
+
+//	public void clearCartByAccountAndType(Long accountId, int cartType) {
+//	    Account account = accountRepository.findById(accountId).orElse(null);
+//
+//	    if (account != null && account.getCart() != null) {
+//	        Cart cart = account.getCart();
+//	        List<CartItem> itemsToRemove = cart.getCartItems()
+//	            .stream()
+//	            .filter(item -> item.getCart_type() == cartType)
+//	            .collect(Collectors.toList());
+//	        cart.getCartItems().removeAll(itemsToRemove);
+//	        cartRepository.save(cart);
+//	    }
+//	}
+	@Transactional
+    public void clearCartByAccountAndType(Long accountId, int cartType) {
+        String sql = "DELETE FROM cart_item WHERE cart_id IN (SELECT id FROM cart WHERE account_id = :accountId) AND cart_type = :cartType";
+        
+        int deletedCount = entityManager.createNativeQuery(sql)
+                .setParameter("accountId", accountId)
+                .setParameter("cartType", cartType)
+                .executeUpdate();
+        
+        System.out.println("Deleted " + deletedCount + " cart items.");
+    }
 
 	public void updateCartItems(List<CartItemDTO> updatedCartItems) {
 		for (CartItemDTO updatedCartItem : updatedCartItems) {
@@ -120,51 +164,50 @@ public class CartService {
 			if (cartItemOptional.isPresent()) {
 				CartItem cartItem = cartItemOptional.get();
 				cartItem.setQuantity(newQuantity);
-
-				// Update the cart item in the database
 				cartItemRepository.save(cartItem);
 			} else {
-				// Handle the case where the cart item with the provided ID is not found
-				// You can throw an exception or handle it as needed
 				throw new RuntimeException("Cart item with ID " + cartItemId + " not found.");
 			}
 		}
 	}
-	
-	public int getTotalQuantityInCart(Long accountId) {
-	    Account account = accountRepository.findById(accountId).orElse(null);
 
-	    if (account != null && account.getCart() != null) {
-	        Cart cart = account.getCart();
-	        List<CartItem> cartItems = cart.getCartItems();
+	public int getTotalQuantityInCart(Long accountId, int cart_type) {
+		Account account = accountRepository.findById(accountId).orElse(null);
 
-	        int totalQuantity = 0;
-	        for (CartItem cartItem : cartItems) {
-	            totalQuantity += cartItem.getQuantity();
-	        }
+		if (account != null && account.getCart() != null) {
+			Cart cart = account.getCart();
+			List<CartItem> cartItems = cart.getCartItems();
 
-	        return totalQuantity;
-	    } else {
-	        return 0; // Hoặc bạn có thể ném một ngoại lệ nếu không tìm thấy tài khoản hoặc giỏ hàng.
-	    }
+			int totalQuantity = 0;
+			for (CartItem cartItem : cartItems) {
+				if (cartItem.getCart_type() == cart_type) {
+					totalQuantity += cartItem.getQuantity();
+				}
+			}
+			return totalQuantity;
+		} else {
+			return 0;
+		}
 	}
-	public int countProductsInCart(Long accountId) {
-	    Account account = accountRepository.findById(accountId).orElse(null);
 
-	    if (account != null && account.getCart() != null) {
-	        Cart cart = account.getCart();
-	        List<CartItem> cartItems = cart.getCartItems();
+	public int countProductsInCart(Long accountId, int cart_type) {
+		Account account = accountRepository.findById(accountId).orElse(null);
 
-	        Set<Product> uniqueProducts = new HashSet<>();
-	        
-	        for (CartItem cartItem : cartItems) {
-	            uniqueProducts.add(cartItem.getProduct());
-	        }
+		if (account != null && account.getCart() != null) {
+			Cart cart = account.getCart();
+			List<CartItem> cartItems = cart.getCartItems();
 
-	        return uniqueProducts.size();
-	    } else {
-	        return 0; 
-	    }
+			int uniqueProductCount = 0;
+			for (CartItem cartItem : cartItems) {
+				if (cartItem.getCart_type() == cart_type) { // Check if cart_type matches
+					uniqueProductCount++;
+				}
+			}
+
+			return uniqueProductCount;
+		} else {
+			return 0;
+		}
 	}
 
 }

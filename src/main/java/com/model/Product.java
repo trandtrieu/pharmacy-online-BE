@@ -52,7 +52,7 @@ public class Product {
 	private int p_quantity;
 
 	@Column
-	private int p_isSale;
+	private int p_type;
 
 	@JsonProperty
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
