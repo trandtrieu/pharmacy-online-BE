@@ -1,12 +1,15 @@
 package com.controller;
 
+import java.security.Principal;
+import java.time.LocalDateTime;
+
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.LoginDTO;
 import com.dto.SignUpDTO;
+import com.dto.UserInfor;
+import com.model.Account;
 import com.repository.AccountRepository;
 import com.service.CustomUserDetailsService;
 import com.service.JwtService;
+import com.service.TokenService;
 
 import jakarta.servlet.http.Cookie;
 
@@ -41,31 +47,39 @@ public class AuthController {
 
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
-
 	
+
+
 	@PostMapping("/token")
-	public ResponseEntity<String> authenticateAndGetToken(@RequestBody LoginDTO loginDto) {
+	public ResponseEntity<UserInfor> authenticateAndGetToken(@RequestBody LoginDTO loginDto) {
 	    Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
 	    
 	    if (authentication.isAuthenticated()) {
 	        String token = jwtService.generateToken(loginDto.getUsername());
 	        Cookie tokenCookie = new Cookie("token", token);
 	        tokenCookie.setMaxAge(3600);
-	        return new ResponseEntity<>(token, HttpStatus.OK);
+	         
+	        Account account = customUserDetailsService.getUserInfoByUsername(loginDto.getUsername());
+	        
+	        if(account != null) {
+	        	UserInfor userInfor = new UserInfor();
+	        	userInfor.setToken(token);
+	        	userInfor.setId(account.getId());
+	        	userInfor.setUsername(loginDto.getUsername());
+		        
+		        return new ResponseEntity<>(userInfor, HttpStatus.OK);
+	        }else {
+				throw new UsernameNotFoundException("User not Found!!!");
+			}
+	        
 	    } else {
 	        throw new UsernameNotFoundException("Invalid user!");
 	    }
 	}
-
-	@GetMapping("/user")
-	public ResponseEntity<UserDetails> getUserDetails(@RequestHeader(name = "Authorization") String token) {
-	    try {
-	        String username = jwtService.getUsernameFromToken(token); // Giải mã token để lấy tên người dùng
-	        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username); // Lấy thông tin người dùng từ cơ sở dữ liệu hoặc nguồn dữ liệu khác
-	        return new ResponseEntity<>(userDetails, HttpStatus.OK);
-	    } catch (Exception e) {
-	        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-	    }
+	
+	@GetMapping("/username")
+	public String getUsernameFromToken(Principal principal) {
+		return principal.getName();
 	}
 	
 	@PostMapping("/register")
@@ -83,6 +97,7 @@ public class AuthController {
 	public ResponseEntity<String> forgotPassword(@RequestParam String mail) {
 		return new ResponseEntity<String>(customUserDetailsService.forgotPassword(mail), HttpStatus.OK);
 	}
+	
 
 	@PutMapping("/set-password")
 	public ResponseEntity<String> setPassword(@RequestParam String mail, @RequestHeader String newPassword) {
