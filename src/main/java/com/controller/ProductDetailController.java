@@ -25,6 +25,7 @@ public class ProductDetailController {
     @Autowired
     private ProductDetailRepository productDetailRepository;
 
+    
     @Autowired
     private ProductRepository productRepository;
 
@@ -39,7 +40,7 @@ public class ProductDetailController {
 
         List<Product> products = productRepository.findAll();
         for (Product product : products) {
-            Product_detail productDetail =  productDetailRepository.findByProduct(product);
+//            Product_detail productDetail =  productDetailRepository.findByProduct(product);
             List<Product_image> productImages = productImageRepository.findByProduct(product);
 
             ProductDetailDTO productDTO = new ProductDetailDTO();
@@ -52,17 +53,17 @@ public class ProductDetailController {
             productDTO.setCategory_id(product.getCategory().getCategory_id());
             String categoryName = product.getCategory().getCategory_name();
             productDTO.setCategory_name(categoryName);
-
-            if (productDetail != null) {
-                productDTO.setComponent(productDetail.getP_component());
-                productDTO.setGuide(productDetail.getP_guide());
-                productDTO.setInstruction(productDetail.getP_instruction());
-                productDTO.setMadeIn(productDetail.getP_madeIn());
-                productDTO.setObject(productDetail.getP_object());
-                productDTO.setPreservation(productDetail.getP_preservation());
-                productDTO.setStore(productDetail.getP_store());
-                productDTO.setVirtue(productDetail.getP_vitue());
-            }
+//
+//            if (productDetail != null) {
+//                productDTO.setComponent(productDetail.getP_component());
+//                productDTO.setGuide(productDetail.getP_guide());
+//                productDTO.setInstruction(productDetail.getP_instruction());
+//                productDTO.setMadeIn(productDetail.getP_madeIn());
+//                productDTO.setObject(productDetail.getP_object());
+//                productDTO.setPreservation(productDetail.getP_preservation());
+//                productDTO.setStore(productDetail.getP_store());
+//                productDTO.setVirtue(productDetail.getP_vitue());
+//            }
 
             List<String> imageUrls = new ArrayList<>();
             for (Product_image productImage : productImages) {
