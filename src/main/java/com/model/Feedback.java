@@ -125,13 +125,6 @@ public class Feedback {
 	}
 
 
-
-	
-
-
-    
-//    @OneToMany(mappedBy = "feedback")
-//    private Set<Comment> comments;
     
 }
 

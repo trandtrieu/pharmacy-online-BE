@@ -25,7 +25,7 @@ public class AccountController {
 		List<Account> accounts = accountRepository.findAll();
 		List<AccountDTO> accountDTOs = accounts.stream().map(account -> {
 			return new AccountDTO(account.getId(), account.getName(), account.getMail(), account.getPassword(),
-					account.getAddress(), account.getDob(), account.getAvatar(), account.getPhone(), account.getRole(),
+					 account.getDob(), account.getAvatar(), account.getPhone(), account.getRole(),
 					account.getContents()
 
 			);

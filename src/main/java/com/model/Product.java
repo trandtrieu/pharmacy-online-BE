@@ -73,7 +73,10 @@ public class Product {
 	private Set<WishList> wishLists = new HashSet<>();
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @JsonManagedReference
+//    @JsonManagedReference
     private List<Feedback> feedbackList;
+	
+	
+	
 	
 }

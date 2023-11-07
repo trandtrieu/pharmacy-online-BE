@@ -27,7 +27,7 @@ public class AccountDTO {
 
 	private String password;
 
-	private String address;
+//	private String address;
 
 	private String dob;
 
@@ -45,14 +45,14 @@ public class AccountDTO {
 
 //	private Cart cart;
 
-	public AccountDTO(long id, String name, String mail, String password, String address, String dob, String avatar,
+	public AccountDTO(long id, String name, String mail, String password, String dob, String avatar,
 			String phone, Role role, Set<com.model.Orders> orders, Set<Content> contents, WishList wishList) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.mail = mail;
 		this.password = password;
-		this.address = address;
+//		this.address = address;
 		this.dob = dob;
 		this.avatar = avatar;
 		this.phone = phone;
@@ -62,28 +62,27 @@ public class AccountDTO {
 		this.wishList = wishList;
 	}
 
-	public AccountDTO(long id, String name, String mail, String password, String address, String dob, String avatar,
+	public AccountDTO(long id, String name, String mail, String password, String dob, String avatar,
 			String phone, Role role) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.mail = mail;
 		this.password = password;
-		this.address = address;
+//		this.address = address;
 		this.dob = dob;
 		this.avatar = avatar;
 		this.phone = phone;
 		this.role = role;
 	}
 
-	public AccountDTO(long id, String name, String mail, String password, String address, String dob, String avatar,
+	public AccountDTO(long id, String name, String mail, String password, String dob, String avatar,
 			String phone, Role role, Set<Content> contents) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.mail = mail;
 		this.password = password;
-		this.address = address;
 		this.dob = dob;
 		this.avatar = avatar;
 		this.phone = phone;
@@ -91,14 +90,14 @@ public class AccountDTO {
 		Contents = contents;
 	}
 
-	public AccountDTO(long id, String name, String mail, String password, String address, String dob, String avatar,
+	public AccountDTO(long id, String name, String mail, String password, String dob, String avatar,
 			String phone, Role role, Set<com.model.Orders> orders, Set<Content> contents) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.mail = mail;
 		this.password = password;
-		this.address = address;
+
 		this.dob = dob;
 		this.avatar = avatar;
 		this.phone = phone;
@@ -107,14 +106,13 @@ public class AccountDTO {
 		Contents = contents;
 	}
 
-	public AccountDTO(long id, String name, String mail, String password, String address, String dob, String avatar,
+	public AccountDTO(long id, String name, String mail, String password, String dob, String avatar,
 			String phone, Role role, Set<Content> contents, WishList wishList) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.mail = mail;
 		this.password = password;
-		this.address = address;
 		this.dob = dob;
 		this.avatar = avatar;
 		this.phone = phone;

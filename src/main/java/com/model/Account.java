@@ -15,10 +15,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "account")
 public class Account {
@@ -36,8 +41,8 @@ public class Account {
 	@Column(name = "password")
 	private String password;
 
-	@Column(name = "address")
-	private String address;
+//	@Column(name = "address")
+//	private String address;
 
 	@Column(name = "dob")
 	private String dob;
@@ -74,4 +79,7 @@ public class Account {
     
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Reply> Replys ;
+    
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<DeliveryAddress> address ;
 }
