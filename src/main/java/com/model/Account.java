@@ -1,7 +1,6 @@
 package com.model;
 
 import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -10,13 +9,12 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+
 @Getter
 @Setter
 @Entity
@@ -29,15 +27,15 @@ public class Account {
 
 	@Column(name = "name")
 	private String name;
-
+	
+	@Column(name = "username")
+	private String username;
+	
 	@Column(name = "mail")
 	private String mail;
 
 	@Column(name = "password")
 	private String password;
-
-	@Column(name = "address")
-	private String address;
 
 	@Column(name = "dob")
 	private String dob;
@@ -48,30 +46,23 @@ public class Account {
 	@Column(name = "phone")
 	private String phone;
 
-	@ManyToOne
-	@JoinColumn(name = "role_id")
-	private Role role;
+	@Column(name = "roles")
+	private String roles;
 
-//	@OneToMany(mappedBy = "account")
-//	private Set<Orders> Orders;
-
-	@OneToMany(mappedBy = "account")
-	private Set<Content> Contents;
-	
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private WishList wishList;
-	
-	
+
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Cart cart;
-	
-    @OneToMany(mappedBy = "account")
-    private List<Prescription> prescriptions;
-    
-    
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Feedback> feedbackList;
-    
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<Reply> Replys ;
+
+	@OneToMany(mappedBy = "account")
+	private List<Prescription> prescriptions;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Feedback> feedbackList;
+
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	private List<Reply> Replys;
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	private List<DeliveryAddress> address;
 }

@@ -1,6 +1,5 @@
 package com.model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,38 +9,32 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Data
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "content")
-public class Content {
+@Table(name = "Delivery_Address")
+public class DeliveryAddress {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int content_id;
+	private int address_id;
 
-//	private String img;
-	@Column
-	private String content_desc;
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String recipient_full_name;
 
-	@Column
-	private String content_title;
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String recipient_phone_number;
 
-	@Column
-	private String content_date;
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String specific_address;
 
-	@Column
-	private String content_topic;
-
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "u_id", referencedColumnName = "id")
+	@ManyToOne
+	@JoinColumn(name = "user_id")
 	private Account account;
-
 }
