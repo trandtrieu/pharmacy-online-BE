@@ -1,8 +1,10 @@
 package com.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,21 +17,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.CartItemDTO;
+import com.model.DiscountCode;
 import com.service.CartService;
+import com.service.DiscountCodeService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/pharmacy-online/cart/")
+@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/pharmacy-online/cart")
 public class CartController {
 	@Autowired
 	private CartService cartService;
+
+	@Autowired
+	private DiscountCodeService discountCodeService;
 
 	@PostMapping("/add-cart")
 	public ResponseEntity<String> addToCart(@RequestParam Long accountId, @RequestParam int productId,
 			@RequestParam int quantity, @RequestParam int cart_type) {
 		try {
 			cartService.addToCart(accountId, productId, quantity, cart_type);
-			return ResponseEntity.ok("Sản phẩm đã được thêm vào giỏ hàng.");
+			// return ResponseEntity.ok("Sản phẩm đã được thêm vào giỏ hàng.");
+			return new ResponseEntity<>("Hello World!", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body("Lỗi khi thêm sản phẩm vào giỏ hàng: " + e.getMessage());
 		}
@@ -57,20 +66,10 @@ public class CartController {
 		}
 	}
 
-	@DeleteMapping("/remove-all-cart-items")
-    public ResponseEntity<String> removeAllCartItems(@RequestBody List<CartItemDTO> cartItems) {
-        try {
-            cartService.removeAllCartItems(cartItems);
-            return ResponseEntity.ok("Cart items have been removed successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error removing cart items: " + e.getMessage());
-        }
-    }
-	
 	@DeleteMapping("/clear-cart")
 	public ResponseEntity<String> clearCartByAccountAndType(@RequestParam Long accountId, @RequestParam int cartType) {
-	    cartService.clearCartByAccountAndType(accountId, cartType);
-	    return ResponseEntity.ok("Cart of type " + cartType + " for account " + accountId + " has been cleared.");
+		cartService.clearCartByAccountAndType(accountId, cartType);
+		return ResponseEntity.ok("Cart of type " + cartType + " for account " + accountId + " has been cleared.");
 	}
 
 	@PutMapping("/update-cart")
@@ -93,6 +92,56 @@ public class CartController {
 	public ResponseEntity<Integer> countProductsInCart(@RequestParam Long accountId, @RequestParam int cartType) {
 		int uniqueProductCount = cartService.countProductsInCart(accountId, cartType);
 		return ResponseEntity.ok(uniqueProductCount);
+	}
+
+	@GetMapping("/get-total-cart-cost")
+	public ResponseEntity<BigDecimal> getTotalCartCost(@RequestParam Long accountId, @RequestParam int cartType) {
+		BigDecimal totalCartCost = cartService.getTotalCostByAccountAndType(accountId, cartType);
+		return ResponseEntity.ok(totalCartCost);
+	}
+
+	@GetMapping("/get-total-cart-cost-with-shipping-and-discount")
+	public ResponseEntity<BigDecimal> getTotalCartCostWithShippingAndDiscount(@RequestParam Long accountId,
+			@RequestParam int cartType, @RequestParam(required = false) Long discountCodeId) {
+		BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeWithShipping(accountId, cartType);
+
+		if (discountCodeId != null) {
+			DiscountCode discountCode = discountCodeService.getDiscountCodeById(discountCodeId);
+			if (discountCode != null) {
+				totalCartCost = cartService.applyDiscountCode(totalCartCost, discountCode);
+			}
+		}
+		return ResponseEntity.ok(totalCartCost);
+	}
+	
+	
+	@GetMapping("/get-shipping-cost")
+	public ResponseEntity<BigDecimal> getShippingCost(@RequestParam Long accountId, @RequestParam int cartType) {
+	    BigDecimal totalCartCost = cartService.getTotalCostByAccountAndType(accountId, cartType);
+	    BigDecimal shippingCost;
+
+	    if (totalCartCost.compareTo(new BigDecimal(100)) >= 0) {
+	        shippingCost = BigDecimal.ZERO;
+	    } else {
+	        shippingCost = new BigDecimal(10); 
+	    }
+	    
+	    return ResponseEntity.ok(shippingCost); 
+	}
+
+	@PostMapping("/apply-discount")
+	public ResponseEntity<String> applyDiscountCodeToCart(
+	    @RequestParam Long accountId,
+	    @RequestParam int cartType,
+	    @RequestParam String discountCode) {
+	    try {
+	        BigDecimal totalCartCost = cartService.getTotalCostByAccountAndType(accountId, cartType);
+	        // Gọi service để áp dụng mã giảm giá vào tổng giá giỏ hàng
+	        totalCartCost = cartService.applyDiscountCodeToCart(totalCartCost, discountCode);
+	        return ResponseEntity.ok("Mã giảm giá đã được áp dụng. Tổng giá giỏ hàng sau khi giảm giá: " + totalCartCost);
+	    } catch (Exception e) {
+	        return ResponseEntity.badRequest().body("Lỗi khi áp dụng mã giảm giá: " + e.getMessage());
+	    }
 	}
 
 }

@@ -23,6 +23,12 @@ import com.service.CustomUserDetailsService;
 @EnableWebSecurity
 public class SecurityConfig {
 
+//	@Bean
+//	CorsFilter corsFilter() {
+//		CorsFilter filter = new CorsFilter();
+//		return filter;
+//	}
+
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return new CustomUserDetailsService();
@@ -38,30 +44,28 @@ public class SecurityConfig {
 		return new JwtAuthFilter();
 	}
 
-//	@Bean
-//	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//		return http.csrf(csrf -> csrf.disable())
-//				.authorizeHttpRequests(auth -> auth
-//						.requestMatchers("/un-auth/welcome", "/pharmacy-online/products/{productId}",
-//								"/pharmacy-online/products", "/pharmacy-online/products/category", "/auth/register",
-//								"/auth/token", "/auth/forgot-password", "/auth/set-password")
-//						.permitAll().anyRequest().authenticated())
-//				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//				.authenticationProvider(authenticationProvider())
-//				.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class).build();
-//	}
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http.csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/un-auth/welcome",
-								"/auth/register",
-								"/auth/token", "/auth/forgot-password", "/auth/set-password")
-						.permitAll().anyRequest().authenticated())
+		return http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth
+				.requestMatchers("/pharmacy-online/products/**", "/pharmacy-online/product/**",
+						"/pharmacy-online/blog/*", "/pharmacy-online/blogs/*", "/pharmacy-online/feedback/*",
+						
+					 "/pharmacy-online/cart/remove-from-cart" ,
+					 "/pharmacy-online/cart/clear-cart" ,
+					 "/pharmacy-online/cart/update-cart" ,
+					 "pharmacy-online/discount-code/**",
+					 "/pharmacy-online/prescriptions/delete/{prescriptionId}" ,
+					 "/pharmacy-online/prescriptions/view/{prescriptionId}" ,
+					 "/pharmacy-online/prescriptions/update/{prescriptionId}" ,
+
+						"/pharmacy-online/product/feedback/**", "/pharmacy-online/category/*", "/un-auth/welcome",
+						"/auth/register", "/auth/token", "/auth/forgot-password", "/auth/set-password")
+				.permitAll().anyRequest().authenticated())
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class).build();
 	}
+
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -74,5 +78,4 @@ public class SecurityConfig {
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 		return config.getAuthenticationManager();
 	}
-
 }

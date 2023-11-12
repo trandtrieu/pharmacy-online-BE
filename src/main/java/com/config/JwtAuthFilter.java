@@ -30,12 +30,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		
 		String authHeader = request.getHeader("Authorization");
 		String token = null;
 		String username = null;
+		 if ("OPTIONS".equals(request.getMethod())) {
+		        response.setStatus(HttpServletResponse.SC_OK);
+		        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+		        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+		        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+		        response.setHeader("Access-Control-Allow-Credentials", "true");
+		        response.setHeader("Access-Control-Max-Age", "3600");
+		        return;
+		    }
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
 			token = authHeader.substring(7);
 			username = jwtService.extractUsername(token);
+			System.out.println("token 2="+token);
 		}
 
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -47,6 +58,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(authToken);
 			}
 		}
+
 		filterChain.doFilter(request, response);
 	}
 }

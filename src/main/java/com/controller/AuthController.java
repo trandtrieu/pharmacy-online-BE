@@ -59,6 +59,7 @@ public class AuthController {
 	        Account account = customUserDetailsService.getUserInfoByUsername(loginDto.getUsername());
 	        
 	        if(account != null) {
+	        	
 	        	UserInfor userInfor = new UserInfor();
 	        	userInfor.setToken(token);
 	        	userInfor.setId(account.getId());
@@ -78,6 +79,7 @@ public class AuthController {
 	public String getUsernameFromToken(Principal principal) {
 		return principal.getName();
 	}
+	
 	
 	@PostMapping("/register")
 	public String addNewUser(@RequestBody SignUpDTO signUpDto) {

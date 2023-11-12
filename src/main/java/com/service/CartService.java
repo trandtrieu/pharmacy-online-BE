@@ -1,5 +1,7 @@
 package com.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +16,7 @@ import com.dto.ProductDetailDTO;
 import com.model.Account;
 import com.model.Cart;
 import com.model.CartItem;
+import com.model.DiscountCode;
 import com.model.Product;
 import com.model.Product_image;
 import com.repository.AccountRepository;
@@ -38,8 +41,13 @@ public class CartService {
 	private ProductRepository productRepository;
 	@Autowired
 	private CartItemRepository cartItemRepository;
-    @PersistenceContext
-    private EntityManager entityManager;
+	@PersistenceContext
+	private EntityManager entityManager;
+	
+	
+	@Autowired
+	private DiscountCodeService discountCodeService;
+
 	public void addToCart(Long accountId, int productId, int quantity, int cart_type) {
 		Account account = accountRepository.findById(accountId)
 				.orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản"));
@@ -143,16 +151,14 @@ public class CartService {
 //	    }
 //	}
 	@Transactional
-    public void clearCartByAccountAndType(Long accountId, int cartType) {
-        String sql = "DELETE FROM cart_item WHERE cart_id IN (SELECT id FROM cart WHERE account_id = :accountId) AND cart_type = :cartType";
-        
-        int deletedCount = entityManager.createNativeQuery(sql)
-                .setParameter("accountId", accountId)
-                .setParameter("cartType", cartType)
-                .executeUpdate();
-        
-        System.out.println("Deleted " + deletedCount + " cart items.");
-    }
+	public void clearCartByAccountAndType(Long accountId, int cartType) {
+		String sql = "DELETE FROM cart_item WHERE cart_id IN (SELECT id FROM cart WHERE account_id = :accountId) AND cart_type = :cartType";
+
+		int deletedCount = entityManager.createNativeQuery(sql).setParameter("accountId", accountId)
+				.setParameter("cartType", cartType).executeUpdate();
+
+		System.out.println("Deleted " + deletedCount + " cart items.");
+	}
 
 	public void updateCartItems(List<CartItemDTO> updatedCartItems) {
 		for (CartItemDTO updatedCartItem : updatedCartItems) {
@@ -208,6 +214,76 @@ public class CartService {
 		} else {
 			return 0;
 		}
+	}
+
+	public BigDecimal getTotalCostByAccountAndType(Long accountId, int cartType) {
+		Account account = accountRepository.findById(accountId).orElse(null);
+		BigDecimal totalCost = BigDecimal.ZERO;
+
+		if (account != null && account.getCart() != null) {
+			Cart cart = account.getCart();
+			List<CartItem> cartItems = cart.getCartItems();
+
+			for (CartItem cartItem : cartItems) {
+				if (cartItem.getCart_type() == cartType) {
+					BigDecimal itemCost = BigDecimal.valueOf(cartItem.getQuantity())
+							.multiply(cartItem.getProduct().getP_price());
+					totalCost = totalCost.add(itemCost);
+				}
+			}
+		}
+		return totalCost;
+	}
+
+	public BigDecimal getTotalCostByAccountAndTypeWithShipping(Long accountId, int cartType) {
+		BigDecimal totalCost = getTotalCostByAccountAndType(accountId, cartType);
+
+		BigDecimal shippingCost = new BigDecimal("0");
+		BigDecimal freeShippingThreshold = new BigDecimal("100");
+		BigDecimal shippingRate = new BigDecimal("10");
+
+		if (totalCost.compareTo(freeShippingThreshold) < 0) {
+			shippingCost = shippingRate;
+		}
+
+		return totalCost.add(shippingCost);
+	}
+
+	public BigDecimal applyDiscountCode(BigDecimal totalCost, DiscountCode discountCode) {
+		if (discountCode != null && discountCode.getExpiryDate().isAfter(LocalDateTime.now())
+				&& discountCode.getTimesUsable() > 0) {
+			BigDecimal discountAmount = totalCost
+					.multiply(BigDecimal.valueOf(discountCode.getDiscountPercentage() / 100));
+			totalCost = totalCost.subtract(discountAmount);
+			discountCode.setTimesUsable(discountCode.getTimesUsable() - 1);
+		}
+		return totalCost;
+	}
+	
+	
+	
+	
+	public BigDecimal applyDiscountCodeToCart(BigDecimal totalCartCost, String discountCode) {
+	    DiscountCode code = discountCodeService.getDiscountCodeByCode(discountCode);
+	    if (code != null && isDiscountCodeValid(code)) {
+	        totalCartCost = applyDiscount(totalCartCost, code);
+	    }
+	    return totalCartCost;
+	}
+
+	private boolean isDiscountCodeValid(DiscountCode discountCode) {
+	    return discountCode.getExpiryDate().isAfter(LocalDateTime.now()) &&
+	           discountCode.getTimesUsable() > 0 &&
+	           discountCode.getStatus() == 1; // Assuming status 1 means the code is active
+	}
+
+	private BigDecimal applyDiscount(BigDecimal totalCartCost, DiscountCode discountCode) {
+	    BigDecimal discountAmount = totalCartCost.multiply(BigDecimal.valueOf(discountCode.getDiscountPercentage() / 100));
+	    totalCartCost = totalCartCost.subtract(discountAmount);
+	    discountCode.setTimesUsable(discountCode.getTimesUsable() - 1);
+	    // Save the updated discount code back to the database (if required)
+	    discountCodeService.updateDiscountCode(discountCode);
+	    return totalCartCost;
 	}
 
 }

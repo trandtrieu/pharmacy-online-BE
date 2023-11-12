@@ -27,7 +27,7 @@ import com.repository.ReplyRepository;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/pharmacy-online/")
+@RequestMapping("/pharmacy-online/reply")
 public class ReplyController {
 	@Autowired
 	private ReplyRepository replyRepository;
@@ -38,6 +38,8 @@ public class ReplyController {
 	@Autowired
 	private AccountRepository accountRepository;
 
+	
+	
 	// get reply list
 	@GetMapping("/byFeedbackId/{feedbackId}")
 	public List<ReplyDTO> getRepliesByFeedbackId(@PathVariable int feedbackId) {
@@ -69,7 +71,7 @@ public class ReplyController {
 	}
 
 	// add reply
-	@PostMapping("feedback/{feedbackId}/reply/{user_id}/add")
+	@PostMapping("/add/{feedbackId}/{user_id}")
 	public ResponseEntity<?> addReply(@RequestBody ReplyDTO ReplyDTO, @PathVariable int feedbackId,
 			@PathVariable long user_id) {
 		// Tạo một đối tượng Reply và thiết lập thông tin từ DTO

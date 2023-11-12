@@ -30,7 +30,7 @@ import com.service.ProductService;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/pharmacy-online/")
+@RequestMapping("/pharmacy-online/product/feedback/")
 public class FeedbackController {
 	@Autowired
 	private FeedbackRepository feedbackRepository;
@@ -44,15 +44,16 @@ public class FeedbackController {
 	@Autowired
 	private ProductService productService;
 
-	@GetMapping("/products/{productId}/feedbacks")
+	@GetMapping("/{productId}")
 	public List<FeedbackDTO> getProductFeedbacks(@PathVariable Integer productId) {
-		List<FeedbackDTO> feedbackDTOs = new ArrayList<>(); 
+		List<FeedbackDTO> feedbackDTOs = new ArrayList<>();
 
 		Product product = productService.getProductById(productId);
 		if (product != null) {
 			List<Feedback> feedbacks = product.getFeedbackList();
 			feedbacks.sort(Comparator.comparing(Feedback::getFeedback_id)
-				    .thenComparing(Feedback::getCreated_at_time, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+					.thenComparing(Feedback::getCreated_at_time, Comparator.nullsLast(Comparator.naturalOrder()))
+					.reversed());
 
 			for (Feedback feedback : feedbacks) {
 				FeedbackDTO feedbackDTO = new FeedbackDTO();
@@ -76,11 +77,16 @@ public class FeedbackController {
 		return feedbackDTOs;
 	}
 
+//	"/pharmacy-online/product/feedback/"
 	// delete feedback
-	@DeleteMapping("delete/{feedbackId}")
-	public ResponseEntity<String> deleteFeedback(@PathVariable int feedbackId) {
-		Feedback feedback = feedbackRepository.findById(feedbackId).orElse(null);
+	@DeleteMapping("delete/{feedbackId}/{user_id}")
 
+	public ResponseEntity<String> deleteFeedback(@PathVariable int feedbackId, @PathVariable long user_id) {
+		Feedback feedback = feedbackRepository.findById(feedbackId).orElse(null);
+		Account account = accountRepository.findById(user_id).orElse(null);
+		if (account == null) {
+			return new ResponseEntity<>("account not found", HttpStatus.NOT_FOUND);
+		}
 		if (feedback == null) {
 			return new ResponseEntity<>("Feedback not found", HttpStatus.NOT_FOUND);
 		}
@@ -89,7 +95,7 @@ public class FeedbackController {
 	}
 
 	// add feedback
-	@PostMapping("product/{product_id}/feedback/add/{user_id}")
+	@PostMapping("add/{product_id}/{user_id}")
 	public ResponseEntity<?> addFeedback(@RequestBody FeedbackDTO feedbackDTO, @PathVariable int product_id,
 			@PathVariable long user_id) {
 		Account account = accountRepository.findById(user_id).orElse(null);
@@ -126,7 +132,7 @@ public class FeedbackController {
 	}
 
 	// calculate average rating
-	@GetMapping("product/{productId}/averageRating")
+	@GetMapping("/averageRating/{productId}")
 	public double getAverageRating(@PathVariable Integer productId) {
 		double average = 0;
 		Product product = productService.getProductById(productId);
@@ -148,7 +154,7 @@ public class FeedbackController {
 	}
 
 	//
-	@GetMapping("product/{productId}/{rating}")
+	@GetMapping("/{productId}/{rating}")
 	public int getTotalFeedbackByRating(@PathVariable int productId, @PathVariable int rating) {
 		return feedbackRepository.countByRatingAndProductId(rating, productId);
 	}

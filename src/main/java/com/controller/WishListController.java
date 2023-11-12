@@ -24,7 +24,7 @@ import com.repository.AccountRepository;
 import com.repository.WishListRepository;
 import com.service.WishListService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/pharmacy-online/wishlist/")
 public class WishListController {
