@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.CartItemDTO;
+import com.dto.DiscountCalculationResultDTO;
 import com.model.DiscountCode;
 import com.service.CartService;
 import com.service.DiscountCodeService;
@@ -99,7 +100,14 @@ public class CartController {
 		BigDecimal totalCartCost = cartService.getTotalCostByAccountAndType(accountId, cartType);
 		return ResponseEntity.ok(totalCartCost);
 	}
-
+	
+	@GetMapping("/get-total-cart-cost-with-shipping")
+	public ResponseEntity<BigDecimal> getTotalCartCostWithShipping(@RequestParam Long accountId,
+			@RequestParam int cartType) {
+		BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeWithShipping(accountId, cartType);
+		return ResponseEntity.ok(totalCartCost);
+	}
+	
 	@GetMapping("/get-total-cart-cost-with-shipping-and-discount")
 	public ResponseEntity<BigDecimal> getTotalCartCostWithShippingAndDiscount(@RequestParam Long accountId,
 			@RequestParam int cartType, @RequestParam(required = false) Long discountCodeId) {
@@ -129,18 +137,45 @@ public class CartController {
 	    return ResponseEntity.ok(shippingCost); 
 	}
 
+//	@PostMapping("/apply-discount")
+//	public ResponseEntity<String> applyDiscountCodeToCart1(
+//	    @RequestParam Long accountId,
+//	    @RequestParam int cartType,
+//	    @RequestParam String discountCode) {
+//	    try {
+//	        BigDecimal totalCartCost = cartService.getTotalCostByAccountAndType(accountId, cartType);
+//	        DiscountCode code = discountCodeService.getDiscountCodeByCode(discountCode);
+//	        
+//	        if (code != null && cartService.isDiscountCodeValid(code)) {
+//	            // Áp dụng mã giảm giá
+//	            totalCartCost = cartService.applyDiscountCodeToCart(totalCartCost, code);
+//	            return ResponseEntity.ok("Mã giảm giá đã được áp dụng. Tổng giá giỏ hàng sau khi giảm giá: " + totalCartCost);
+//	        } else {
+//	            return ResponseEntity.badRequest().body("Mã giảm giá không hợp lệ.");
+//	        }
+//	    } catch (Exception e) {
+//	        return ResponseEntity.badRequest().body("Lỗi khi áp dụng mã giảm giá: " + e.getMessage());
+//	    }
+//	}
 	@PostMapping("/apply-discount")
-	public ResponseEntity<String> applyDiscountCodeToCart(
+	public ResponseEntity<DiscountCalculationResultDTO> applyDiscountCodeToCart(
 	    @RequestParam Long accountId,
 	    @RequestParam int cartType,
 	    @RequestParam String discountCode) {
 	    try {
-	        BigDecimal totalCartCost = cartService.getTotalCostByAccountAndType(accountId, cartType);
-	        // Gọi service để áp dụng mã giảm giá vào tổng giá giỏ hàng
-	        totalCartCost = cartService.applyDiscountCodeToCart(totalCartCost, discountCode);
-	        return ResponseEntity.ok("Mã giảm giá đã được áp dụng. Tổng giá giỏ hàng sau khi giảm giá: " + totalCartCost);
+	        BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeWithShipping(accountId, cartType);
+	        // Get discount code details
+	        DiscountCode code = discountCodeService.getDiscountCodeByCode(discountCode);
+	        
+	        if (code != null && cartService.isDiscountCodeValid(code)) {
+	            // Apply the discount code
+	        	DiscountCalculationResultDTO result = cartService.applyDiscountCodeToCart(totalCartCost, code);
+	            return ResponseEntity.ok(result);
+	        } else {
+	            return ResponseEntity.badRequest().body(null); // Or handle invalid code scenario accordingly
+	        }
 	    } catch (Exception e) {
-	        return ResponseEntity.badRequest().body("Lỗi khi áp dụng mã giảm giá: " + e.getMessage());
+	        return ResponseEntity.badRequest().body(null); // Or handle exception scenario accordingly
 	    }
 	}
 
