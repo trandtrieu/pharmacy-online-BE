@@ -77,10 +77,13 @@ public class FeedbackController {
 	}
 
 	// delete feedback
-	@DeleteMapping("delete/{feedbackId}")
-	public ResponseEntity<String> deleteFeedback(@PathVariable int feedbackId) {
+	@DeleteMapping("delete/{feedbackId}/{user_id}")
+	public ResponseEntity<String> deleteFeedback(@PathVariable int feedbackId , @PathVariable long user_id) {
 		Feedback feedback = feedbackRepository.findById(feedbackId).orElse(null);
-
+		Account account = accountRepository.findById(user_id).orElse(null);
+		if(account == null ) {
+			return new ResponseEntity<>("account not found", HttpStatus.NOT_FOUND);
+		}
 		if (feedback == null) {
 			return new ResponseEntity<>("Feedback not found", HttpStatus.NOT_FOUND);
 		}

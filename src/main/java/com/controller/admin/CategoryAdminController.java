@@ -1,4 +1,4 @@
-package com.controller;
+package com.controller.admin;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,27 +13,20 @@ import com.dto.CategoryDTO;
 import com.model.Category;
 import com.repository.CategoryRepository;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3006")
 @RestController
-@RequestMapping("/pharmacy-online/category/")
-public class CategoryController {
-
+@RequestMapping("/pharmacy-online/admin/category")
+public class CategoryAdminController {
+	
 	@Autowired
 	private CategoryRepository categoryRepository;
-
-
-	@GetMapping("/type")
-	public List<CategoryDTO> getAllCategory() {
+	// get all category
+	@GetMapping("/categories")
+	public List<CategoryDTO> getAllCategories(){
 		List<Category> categories = categoryRepository.findAll();
 		List<CategoryDTO> categoryDTOs = categories.stream().map(category -> {
-			return new CategoryDTO(category.getCategory_id(), category.getCategory_name(), category.getCategory_img());
+			return new CategoryDTO(category.getCategory_id(), category.getCategory_name());
 		}).collect(Collectors.toList());
 		return categoryDTOs;
 	}
-
-	
-
-	
-	
-	
 }

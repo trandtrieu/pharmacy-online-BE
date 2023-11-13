@@ -25,7 +25,7 @@ public class ProductDetailDTO {
 	private Date createdDate;
 	private int status;
 	private int quantity;
-	private int isSale;
+	private int type;
 	private int category_id;
 	private String category_name;
 	private String Ingredients;

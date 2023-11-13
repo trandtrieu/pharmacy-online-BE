@@ -1,6 +1,7 @@
 package com.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,9 @@ public class ProductService {
 		product.setP_price(productDetailDTO.getPrice());
 		product.setP_brand(productDetailDTO.getBrand());
 		product.setP_status(productDetailDTO.getStatus());
-	
+		product.setP_quantity(productDetailDTO.getQuantity());
+		product.setP_type(productDetailDTO.getType());
+		product.setCreatedDate(new Date());
 		Category category = categoryRepository.findById(productDetailDTO.getCategory_id()).orElse(null);
 		if (category != null) {
 			// Gán category cho sản phẩm
@@ -90,7 +93,8 @@ public class ProductService {
 			product.setP_price(productDetailDTO.getPrice());
 			product.setP_brand(productDetailDTO.getBrand());
 			product.setP_status(productDetailDTO.getStatus());
-
+			product.setP_quantity(productDetailDTO.getQuantity());
+			product.setP_type(productDetailDTO.getType());
 			Category category = categoryRepository.findById(productDetailDTO.getCategory_id()).orElse(null);
 			// Kiểm tra xem category có tồn tại không
 			if (category != null) {
@@ -115,18 +119,40 @@ public class ProductService {
 			}
 
 			// Lưu danh sách hình ảnh sản phẩm
-			List<String> imageUrls = productDetailDTO.getImageUrls();
-			if (imageUrls != null && !imageUrls.isEmpty()) {
-				List<Product_image> productImages = new ArrayList<>();
+//			List<String> imageUrls = productDetailDTO.getImageUrls();
+	        // Lấy danh sách hình ảnh sản phẩm cũ
+	        List<Product_image> oldImages = productImageRepository.findByProduct(product);
 
-				for (String imageUrl : imageUrls) {
-					Product_image productImage = new Product_image();
-					productImage.setImageUrl(imageUrl);
-					productImage.setProduct(product);
-					productImages.add(productImage);
-				}
-				productImageRepository.saveAll(productImages);
-			}
+	        // Lấy danh sách hình ảnh mới từ DTO
+	        List<String> newImageUrls = productDetailDTO.getImageUrls();
+//			if (imageUrls != null && !imageUrls.isEmpty()) {
+//				List<Product_image> productImages = new ArrayList<>();
+//
+//				for (String imageUrl : imageUrls) {
+//					Product_image productImage = new Product_image();
+//					productImage.setImageUrl(imageUrl);
+//					productImage.setProduct(product);
+//					productImages.add(productImage);
+//				}
+//				productImageRepository.saveAll(productImages);
+//			}
+	        List<Product_image> productImages = new ArrayList<>();
+	        if (newImageUrls != null && !newImageUrls.isEmpty()) {
+	            // Xóa các ảnh cũ
+	            productImageRepository.deleteAll(oldImages);
+
+	            // Thêm các ảnh mới
+	            for (String imageUrl : newImageUrls) {
+	                Product_image productImage = new Product_image();
+	                productImage.setImageUrl(imageUrl);
+	                productImage.setProduct(product);
+	                productImages.add(productImage);
+	            }
+	            productImageRepository.saveAll(productImages);
+	        } else {
+	            // Nếu không có ảnh mới, giữ nguyên các ảnh cũ
+	            productImages.addAll(oldImages);
+	        }
 		}
 	}
 

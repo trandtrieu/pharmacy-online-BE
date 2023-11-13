@@ -1,11 +1,8 @@
 package com.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.ProductDetailDTO;
-import com.model.Product;
-import com.repository.ProductRepository;
 import com.service.ProductService;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -23,14 +18,26 @@ import com.service.ProductService;
 @RequestMapping("/pharmacy-online/")
 public class ProductController {
 
-	@Autowired
-	private ProductRepository productRepository;
+	private final ProductService productService;
 
-	@GetMapping("/products/test")
-	public List<Product> getAllProducts() {
+    @Autowired
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
-		return productRepository.findAll();
-	}
+    @PostMapping("/products")
+    public ResponseEntity<String> addProduct(@RequestBody ProductDetailDTO productDetailDTO) {
+        productService.addProduct(productDetailDTO);
+        return ResponseEntity.ok("Sản phẩm đã được thêm thành công.");
+    }
+    
+    @PutMapping("/products/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody ProductDetailDTO productDetails){
+		productService.updateProduct(id, productDetails);
+    	
+		return ResponseEntity.ok("Sản phẩm đã được cập nhập thành công.");
+    	
+    }
 	
 
 }
