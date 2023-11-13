@@ -44,8 +44,7 @@ public class CartService {
 	private CartItemRepository cartItemRepository;
 	@PersistenceContext
 	private EntityManager entityManager;
-	
-	
+
 	@Autowired
 	private DiscountCodeService discountCodeService;
 
@@ -138,19 +137,6 @@ public class CartService {
 		}
 	}
 
-//	public void clearCartByAccountAndType(Long accountId, int cartType) {
-//	    Account account = accountRepository.findById(accountId).orElse(null);
-//
-//	    if (account != null && account.getCart() != null) {
-//	        Cart cart = account.getCart();
-//	        List<CartItem> itemsToRemove = cart.getCartItems()
-//	            .stream()
-//	            .filter(item -> item.getCart_type() == cartType)
-//	            .collect(Collectors.toList());
-//	        cart.getCartItems().removeAll(itemsToRemove);
-//	        cartRepository.save(cart);
-//	    }
-//	}
 	@Transactional
 	public void clearCartByAccountAndType(Long accountId, int cartType) {
 		String sql = "DELETE FROM cart_item WHERE cart_id IN (SELECT id FROM cart WHERE account_id = :accountId) AND cart_type = :cartType";
@@ -260,20 +246,19 @@ public class CartService {
 		}
 		return totalCost;
 	}
-	
-	
+
 	public DiscountCalculationResultDTO applyDiscountCodeToCart(BigDecimal totalCartCost, DiscountCode discountCode) {
 		DiscountCalculationResultDTO result = new DiscountCalculationResultDTO();
-	    if (isDiscountCodeValid(discountCode)) {
-	        result.setDiscountAmount(totalCartCost.multiply(BigDecimal.valueOf(discountCode.getDiscountPercentage() / 100)));
-	        result.setTotalCostAfterDiscount(totalCartCost.subtract(result.getDiscountAmount()));
-	        discountCode.setTimesUsable(discountCode.getTimesUsable() - 1);
-	        discountCodeService.updateDiscountCode(discountCode); // Update discount code info
-	    }
-	    return result;
+		if (isDiscountCodeValid(discountCode)) {
+			result.setDiscountAmount(
+					totalCartCost.multiply(BigDecimal.valueOf(discountCode.getDiscountPercentage() / 100)));
+			result.setTotalCostAfterDiscount(totalCartCost.subtract(result.getDiscountAmount()));
+			discountCode.setTimesUsable(discountCode.getTimesUsable() - 1);
+			discountCodeService.updateDiscountCode(discountCode); // Update discount code info
+		}
+		return result;
 	}
 
-	
 //	public BigDecimal applyDiscountCodeToCart(BigDecimal totalCartCost, DiscountCode discountCode) {
 //	    if (isDiscountCodeValid(discountCode)) {
 //	        totalCartCost = applyDiscount(totalCartCost, discountCode);
@@ -289,14 +274,9 @@ public class CartService {
 //	    return totalCartCost;
 //	}
 
-
 	public boolean isDiscountCodeValid(DiscountCode discountCode) {
-	    return discountCode.getExpiryDate().isAfter(LocalDateTime.now()) &&
-	           discountCode.getTimesUsable() > 0 &&
-	           discountCode.getStatus() == 1; // Assuming status 1 means the code is active
+		return discountCode.getExpiryDate().isAfter(LocalDateTime.now()) && discountCode.getTimesUsable() > 0
+				&& discountCode.getStatus() == 1; // Assuming status 1 means the code is active
 	}
-
-
-
 
 }

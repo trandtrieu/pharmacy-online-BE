@@ -47,8 +47,10 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth
-				.requestMatchers("/pharmacy-online/products/**", "/pharmacy-online/product/**",
-						"/pharmacy-online/blog/*", "/pharmacy-online/blogs/*", "/pharmacy-online/feedback/*",
+				.requestMatchers("/pharmacy-online/products",
+						"/pharmacy-online/products/**", "/pharmacy-online/product/**",
+						"/pharmacy-online/blog/*", "/pharmacy-online/blogs/*",
+						"/pharmacy-online/feedback/*",
 						
 					 "/pharmacy-online/cart/remove-from-cart" ,
 					 "/pharmacy-online/cart/clear-cart" ,
@@ -57,7 +59,7 @@ public class SecurityConfig {
 					 "/pharmacy-online/prescriptions/delete/{prescriptionId}" ,
 					 "/pharmacy-online/prescriptions/view/{prescriptionId}" ,
 					 "/pharmacy-online/prescriptions/update/{prescriptionId}" ,
-
+					 "/pharmacy-online/reply/byFeedbackId/{feedbackId}",
 						"/pharmacy-online/product/feedback/**", "/pharmacy-online/category/*", "/un-auth/welcome",
 						"/auth/register", "/auth/token", "/auth/forgot-password", "/auth/set-password")
 				.permitAll().anyRequest().authenticated())
