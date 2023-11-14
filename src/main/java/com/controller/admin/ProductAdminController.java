@@ -1,5 +1,6 @@
 package com.controller.admin;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,6 +81,52 @@ public class ProductAdminController {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Xóa sản phẩm không thành công.");
 		}
+	}
+	
+	
+	//get product by id
+	@GetMapping("/{productId}")
+	public ResponseEntity<ProductDetailDTO> getProductDetailsById(@PathVariable Integer productId) {
+		Product product = productRepository.findById(productId).orElse(null);
+
+		if (product == null) {
+			return ResponseEntity.notFound().build();
+		}
+
+		ProductDetailDTO productDTO = new ProductDetailDTO();
+		productDTO.setProductId(product.getProduct_id());
+		productDTO.setBrand(product.getP_brand());
+		productDTO.setName(product.getP_name());
+		productDTO.setPrice(product.getP_price());
+		productDTO.setStatus(product.getP_status());
+		productDTO.setCategory_id(product.getCategory().getCategory_id());
+		productDTO.setCategory_name(product.getCategory().getCategory_name());
+		productDTO.setQuantity(product.getP_quantity());
+		productDTO.setType(product.getP_type());
+		productDTO.setCreatedDate(product.getCreatedDate());
+
+		Product_detail productDetail = productDetailRepository.findByProduct(product);
+		if (productDetail != null) {
+			productDTO.setIngredients(productDetail.getP_Ingredients());
+			productDTO.setIndications(productDetail.getP_Indications());
+			productDTO.setContraindications(productDetail.getP_Contraindications());
+			productDTO.setMadeIn(productDetail.getP_madeIn());
+			productDTO.setDosageAndUsage(productDetail.getP_DosageAndUsage());
+			productDTO.setSideEffects(productDetail.getP_SideEffects());
+			productDTO.setPrecautions(productDetail.getP_Precautions());
+			productDTO.setDrugInteractions(productDetail.getP_DrugInteractions());
+			productDTO.setStorage(productDetail.getP_Storage());
+			productDTO.setPackaging(productDetail.getP_Packaging());
+		}
+
+		List<Product_image> productImages = productImageRepository.findByProduct(product);
+		List<String> imageUrls = new ArrayList<>();
+		for (Product_image productImage : productImages) {
+			imageUrls.add(productImage.getImageUrl());
+		}
+		productDTO.setImageUrls(imageUrls);
+
+		return ResponseEntity.ok(productDTO);
 	}
 
 	private ProductDetailDTO createProductDetailDTO(Product product) {
