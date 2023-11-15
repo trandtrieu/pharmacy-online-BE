@@ -50,6 +50,7 @@ public class DeliveryAddressController {
 				deliveryAddressDTO.setRecipient_full_name(deliveryAddress.getRecipient_full_name());
 				deliveryAddressDTO.setRecipient_phone_number(deliveryAddress.getRecipient_phone_number());
 				deliveryAddressDTO.setSpecific_address(deliveryAddress.getSpecific_address());
+				deliveryAddressDTO.setStatus_default(deliveryAddress.getStatus_default());
 				deliveryAddressDTO.setUser_id(deliveryAddress.getAccount().getId());
 				deliveryAddressDTOs.add(deliveryAddressDTO);
 			}
@@ -81,7 +82,7 @@ public class DeliveryAddressController {
 		deliveryAddressRepository.delete(deliveryAddress);
 		return new ResponseEntity<>("DeliveryAddress deleted successfully", HttpStatus.OK);
 	}
-  
+
 	// add delivery_address
 	@PostMapping("delivery-address/add/{user_id}")
 	public ResponseEntity<?> addDeliveryAddress(@PathVariable long user_id,
@@ -101,37 +102,39 @@ public class DeliveryAddressController {
 
 	}
 
-	// update delivery_address
-	@PutMapping("delivery-address/update")
-	public ResponseEntity<?> updateDeliveryAddress(@RequestParam long user_id, @RequestParam int deliveryAddressID,
-			@RequestBody DeliveryAddressDTO deliveryAddressDTO) {
-		// Check if the user exists
+	// set default delivery_address
+	@PutMapping("delivery-address/setDefault")
+	public ResponseEntity<?> setDefaultDeliveryAddress(@RequestParam long user_id,
+			@RequestParam int deliveryAddressID) {
+
 		Optional<Account> optionalAccount = accountRepository.findById(user_id);
 		if (!optionalAccount.isPresent()) {
 			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 		}
 
-		// Check if the delivery address exists
 		Optional<DeliveryAddress> optionalDeliveryAddress = deliveryAddressRepository.findById(deliveryAddressID);
 		if (!optionalDeliveryAddress.isPresent()) {
 			return new ResponseEntity<>("Delivery address not found", HttpStatus.NOT_FOUND);
 		}
 
-		// Make sure the delivery address belongs to the user
 		DeliveryAddress deliveryAddress = optionalDeliveryAddress.get();
 		if (deliveryAddress.getAccount().getId() != user_id) {
 			return new ResponseEntity<>("Delivery address does not belong to the user", HttpStatus.BAD_REQUEST);
 		}
 
-		// Update the delivery address fields
-		deliveryAddress.setRecipient_full_name(deliveryAddressDTO.getRecipient_full_name());
-		deliveryAddress.setRecipient_phone_number(deliveryAddressDTO.getRecipient_phone_number());
-		deliveryAddress.setSpecific_address(deliveryAddressDTO.getSpecific_address());
+		deliveryAddress.setStatus_default(1);
 
-		// Save the updated delivery address
+		List<DeliveryAddress> userAddresses = deliveryAddressRepository.findByAccountId(user_id);
+		for (DeliveryAddress address : userAddresses) {
+			if (address.getAddress_id() != deliveryAddressID) {
+				address.setStatus_default(0);
+				deliveryAddressRepository.save(address);
+			}
+		}
+
 		deliveryAddressRepository.save(deliveryAddress);
 
-		return new ResponseEntity<>(deliveryAddressDTO, HttpStatus.OK);
+		return new ResponseEntity<>("Default delivery address set successfully.", HttpStatus.OK);
 	}
 
 }

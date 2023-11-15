@@ -33,6 +33,9 @@ public class DeliveryAddress {
 
 	@Column(columnDefinition = "nvarchar(MAX)")
 	private String specific_address;
+	
+	@Column
+	private int status_default;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")

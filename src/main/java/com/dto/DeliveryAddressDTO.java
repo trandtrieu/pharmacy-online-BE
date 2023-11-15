@@ -14,6 +14,7 @@ public class DeliveryAddressDTO {
 	private String recipient_full_name;
 	private String recipient_phone_number;
 	private String specific_address;
+	private int status_default;
 	private long user_id;
 
 
