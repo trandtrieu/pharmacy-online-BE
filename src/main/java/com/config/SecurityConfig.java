@@ -51,7 +51,13 @@ public class SecurityConfig {
 						"/pharmacy-online/admin/products/**",
 						"/pharmacy-online/admin/prescriptions/**",
 						"/pharmacy-online/admin/category/**",
-						"/pharmacy-online/products/**", "/pharmacy-online/product/**", "/pharmacy-online/blog/**",
+						"/pharmacy-online/admin/cart/**",
+"pharmacy-online/products/filter/rangefilt04",
+						"/pharmacy-online/products/**", 
+						"/pharmacy-online/products/filter/**", 
+
+						"/pharmacy-online/product/**",
+						"/pharmacy-online/blog/**",
 						"/pharmacy-online/blogs/**", "/pharmacy-online/feedback/*",
 
 						"/pharmacy-online/cart/remove-from-cart", "/pharmacy-online/cart/clear-cart",
