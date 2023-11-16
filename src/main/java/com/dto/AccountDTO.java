@@ -21,19 +21,17 @@ public class AccountDTO {
 
 	private String mail;
 
-	private String password;
+	private String username;
 
-	private String address;
+//	private String password;
+
+//	private String address;
 
 	private String dob;
 
-	private String avatar;
+//	private String avatar;
 
 	private String phone;
-
-	private Role role;
-
-	private WishList wishList;
 
 
 }

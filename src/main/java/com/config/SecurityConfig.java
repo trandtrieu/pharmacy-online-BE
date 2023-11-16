@@ -55,7 +55,7 @@ public class SecurityConfig {
 "pharmacy-online/products/filter/rangefilt04",
 						"/pharmacy-online/products/**", 
 						"/pharmacy-online/products/filter/**", 
-
+						"/pharmacy-online/admin/account/**",
 						"/pharmacy-online/product/**",
 						"/pharmacy-online/blog/**",
 						"/pharmacy-online/blogs/**", "/pharmacy-online/feedback/*",
