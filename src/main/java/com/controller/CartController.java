@@ -100,14 +100,14 @@ public class CartController {
 		BigDecimal totalCartCost = cartService.getTotalCostByAccountAndType(accountId, cartType);
 		return ResponseEntity.ok(totalCartCost);
 	}
-	
+
 	@GetMapping("/get-total-cart-cost-with-shipping")
 	public ResponseEntity<BigDecimal> getTotalCartCostWithShipping(@RequestParam Long accountId,
 			@RequestParam int cartType) {
 		BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeWithShipping(accountId, cartType);
 		return ResponseEntity.ok(totalCartCost);
 	}
-	
+
 	@GetMapping("/get-total-cart-cost-with-shipping-and-discount")
 	public ResponseEntity<BigDecimal> getTotalCartCostWithShippingAndDiscount(@RequestParam Long accountId,
 			@RequestParam int cartType, @RequestParam(required = false) Long discountCodeId) {
@@ -121,20 +121,19 @@ public class CartController {
 		}
 		return ResponseEntity.ok(totalCartCost);
 	}
-	
-	
+
 	@GetMapping("/get-shipping-cost")
 	public ResponseEntity<BigDecimal> getShippingCost(@RequestParam Long accountId, @RequestParam int cartType) {
-	    BigDecimal totalCartCost = cartService.getTotalCostByAccountAndType(accountId, cartType);
-	    BigDecimal shippingCost;
+		BigDecimal totalCartCost = cartService.getTotalCostByAccountAndType(accountId, cartType);
+		BigDecimal shippingCost;
 
-	    if (totalCartCost.compareTo(new BigDecimal(100)) >= 0) {
-	        shippingCost = BigDecimal.ZERO;
-	    } else {
-	        shippingCost = new BigDecimal(10); 
-	    }
-	    
-	    return ResponseEntity.ok(shippingCost); 
+		if (totalCartCost.compareTo(new BigDecimal(300000)) >= 0) {
+			shippingCost = BigDecimal.ZERO;
+		} else {
+			shippingCost = new BigDecimal(30000);
+		}
+
+		return ResponseEntity.ok(shippingCost);
 	}
 
 //	@PostMapping("/apply-discount")
@@ -158,25 +157,23 @@ public class CartController {
 //	    }
 //	}
 	@PostMapping("/apply-discount")
-	public ResponseEntity<DiscountCalculationResultDTO> applyDiscountCodeToCart(
-	    @RequestParam Long accountId,
-	    @RequestParam int cartType,
-	    @RequestParam String discountCode) {
-	    try {
-	        BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeWithShipping(accountId, cartType);
-	        // Get discount code details
-	        DiscountCode code = discountCodeService.getDiscountCodeByCode(discountCode);
-	        
-	        if (code != null && cartService.isDiscountCodeValid(code)) {
-	            // Apply the discount code
-	        	DiscountCalculationResultDTO result = cartService.applyDiscountCodeToCart(totalCartCost, code);
-	            return ResponseEntity.ok(result);
-	        } else {
-	            return ResponseEntity.badRequest().body(null); // Or handle invalid code scenario accordingly
-	        }
-	    } catch (Exception e) {
-	        return ResponseEntity.badRequest().body(null); // Or handle exception scenario accordingly
-	    }
+	public ResponseEntity<DiscountCalculationResultDTO> applyDiscountCodeToCart(@RequestParam Long accountId,
+			@RequestParam int cartType, @RequestParam String discountCode) {
+		try {
+			BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeWithShipping(accountId, cartType);
+			// Get discount code details
+			DiscountCode code = discountCodeService.getDiscountCodeByCode(discountCode);
+
+			if (code != null && cartService.isDiscountCodeValid(code)) {
+				// Apply the discount code
+				DiscountCalculationResultDTO result = cartService.applyDiscountCodeToCart(totalCartCost, code);
+				return ResponseEntity.ok(result);
+			} else {
+				return ResponseEntity.badRequest().body(null); // Or handle invalid code scenario accordingly
+			}
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(null); // Or handle exception scenario accordingly
+		}
 	}
 
 }

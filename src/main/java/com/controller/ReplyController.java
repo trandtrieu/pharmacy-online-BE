@@ -62,7 +62,7 @@ public class ReplyController {
 				replydto.setCreated_at_time(reply.getCreated_at_time().format(DateTimeFormatter.ofPattern("HH:mm")));
 			}
 			replydto.setUser_id(feedback.getUser().getId());
-			replydto.setUser_name(reply.getAccount().getName());
+			replydto.setUser_name(reply.getAccount().getUsername());
 			replydto.setReply_feedback(reply.getReply_feedback());
 			replyDTOs.add(replydto);
 		}
@@ -100,7 +100,7 @@ public class ReplyController {
 			ReplyDTO.setFeedback_id(feedbackId);
 			reply.setAccount(accountRepository.findById(user_id).orElse(null));
 			
-			ReplyDTO.setUser_name(reply.getAccount().getName());
+			ReplyDTO.setUser_name(reply.getAccount().getUsername());
 			reply.setFeedback(feedbackRepository.findById(ReplyDTO.getFeedback_id()).orElse(null));
 			replyRepository.save(reply);
 		}

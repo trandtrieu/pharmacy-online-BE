@@ -117,7 +117,7 @@ public class PrescriptionController {
 
 	private PrescriptionDTO createPrescriptionDTO(Prescription prescription) {
 		PrescriptionDTO prescriptionDTO = new PrescriptionDTO(prescription.getId(), prescription.getNote(),
-				prescription.getImageUrls(), prescription.getStatus(), prescription.getAccount().getName(),
+				prescription.getImageUrls(), prescription.getStatus(), prescription.getName(),
 				prescription.getAccount().getId(), prescription.getPhone(), prescription.getEmail());
 		prescriptionDTO.setCreatedDate(prescription.getCreatedDate());
 		prescriptionDTO.setCreatedTime(prescription.getCreatedTime().format(DateTimeFormatter.ofPattern("HH:mm")));

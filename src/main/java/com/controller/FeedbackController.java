@@ -69,7 +69,7 @@ public class FeedbackController {
 				feedbackDTO.setProduct_id(product.getProduct_id());
 				feedbackDTO.setP_name(product.getP_name());
 				feedbackDTO.setUser_id(feedback.getUser().getId());
-				feedbackDTO.setUser_name(feedback.getUser().getName());
+				feedbackDTO.setUser_name(feedback.getUser().getUsername());
 				feedbackDTOs.add(feedbackDTO);
 			}
 		}
@@ -124,7 +124,7 @@ public class FeedbackController {
 			feedbackDTO.setUser_id(feedback.getUser().getId());
 			feedbackDTO.setProduct_id(feedback.getProduct().getProduct_id());
 			feedbackDTO.setP_name(feedback.getProduct().getP_name());
-			feedbackDTO.setUser_name(feedback.getUser().getName());
+			feedbackDTO.setUser_name(feedback.getUser().getUsername());
 			feedbackRepository.save(feedback);
 		}
 
