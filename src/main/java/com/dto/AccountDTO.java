@@ -23,13 +23,13 @@ public class AccountDTO {
 
 	private String username;
 
-//	private String password;
+	private String password;
 
 //	private String address;
 
 	private String dob;
 
-//	private String avatar;
+	private String avatar;
 
 	private String phone;
 

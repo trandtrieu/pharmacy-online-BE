@@ -59,7 +59,7 @@ public class SecurityConfig {
 						"/pharmacy-online/product/**",
 						"/pharmacy-online/blog/**",
 						"/pharmacy-online/blogs/**", "/pharmacy-online/feedback/*",
-
+//						"/pharmacy-online/account/img/**",
 						"/pharmacy-online/cart/remove-from-cart", "/pharmacy-online/cart/clear-cart",
 						"/pharmacy-online/cart/update-cart", "pharmacy-online/discount-code/**",
 						"/pharmacy-online/prescriptions/delete/{prescriptionId}",

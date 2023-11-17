@@ -53,6 +53,9 @@ public class Account {
 	@Column(name = "roles")
 	private String roles;
 
+	@Column
+	private String account_image;
+
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private WishList wishList;
 
@@ -70,4 +73,6 @@ public class Account {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
 	private List<DeliveryAddress> address;
+
+
 }
