@@ -37,19 +37,19 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@Query("SELECT p FROM Product p")
 	List<Product> findAllWithAllPrice();
 
-	@Query("SELECT p FROM Product p WHERE p_price >= 0 and p_price <= 100")
+	@Query("SELECT p FROM Product p WHERE p_price >= 0 and p_price <= 100000")
 	List<Product> findAllWithRange0To100();
 
-	@Query("SELECT p FROM Product p WHERE p_price > 100 and p_price <= 200")
+	@Query("SELECT p FROM Product p WHERE p_price > 100000 and p_price <= 200000")
 	List<Product> findAllWithRange100To200();
 
-	@Query("SELECT p FROM Product p WHERE p_price > 200 and p_price <= 500")
+	@Query("SELECT p FROM Product p WHERE p_price > 200000 and p_price <= 500000")
 	List<Product> findAllWithRange200To500();
 
-	@Query("SELECT p FROM Product p WHERE p_price > 500 and p_price <= 1000")
+	@Query("SELECT p FROM Product p WHERE p_price > 500000 and p_price <= 1000000")
 	List<Product> findAllWithRange500To1000();
 
-	@Query("SELECT p FROM Product p WHERE p_price > 1000")
+	@Query("SELECT p FROM Product p WHERE p_price > 1000000")
 	List<Product> findAllWithRangeGreaterThan1000();
 
 //	@Query("SELECT p FROM Product p WHERE p.createdDate = (SELECT MAX(p2.createdDate) FROM Product p2)")

@@ -166,4 +166,31 @@ public class DeliveryAddressController {
 	    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
+	// get delivery-address by status default = 1
+	@GetMapping("delivery-address/status-default/{user_id}")
+	public ResponseEntity<DeliveryAddressDTO> getDefaultDeliveryAddressByUserId(@PathVariable long user_id) {
+		Account account = accountRepository.findById(user_id).orElse(null);
+
+		if (account != null) {
+			List<DeliveryAddress> deliveryAddresses = account.getAddress();
+
+			for (DeliveryAddress deliveryAddress : deliveryAddresses) {
+				if (deliveryAddress.getStatus_default() == 1) {
+					DeliveryAddressDTO deliveryAddressDTO = new DeliveryAddressDTO();
+					// Thiết lập các thông tin trong DeliveryAddressDTO dựa trên DeliveryAddress
+					deliveryAddressDTO.setAddress_id(deliveryAddress.getAddress_id());
+					deliveryAddressDTO.setRecipient_full_name(deliveryAddress.getRecipient_full_name());
+					deliveryAddressDTO.setRecipient_phone_number(deliveryAddress.getRecipient_phone_number());
+					deliveryAddressDTO.setSpecific_address(deliveryAddress.getSpecific_address());
+					deliveryAddressDTO.setStatus_default(deliveryAddress.getStatus_default());
+					deliveryAddressDTO.setUser_id(deliveryAddress.getAccount().getId());
+
+					return new ResponseEntity<>(deliveryAddressDTO, HttpStatus.OK);
+				}
+			}
+		}
+
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
 }

@@ -3,6 +3,7 @@ package com.controller.admin;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -67,18 +68,25 @@ public class CartAdminController {
 		}
 	}
 
-	 @GetMapping("/get-total-quantity-in-cart")
-	 public ResponseEntity<Integer> getTotalQuantityInCart(@RequestParam Long accountId, @RequestParam int cartType) {
-	     int totalQuantity = cartService.getTotalQuantityInCart(accountId, cartType);
-	     return ResponseEntity.ok(totalQuantity);
-	 }
-	 
-	 @GetMapping("/count-product-cart")
-	 public ResponseEntity<Integer> countProductsInCart(
-	         @RequestParam Long accountId,
-	         @RequestParam int cartType
-	 ) {
-	     int uniqueProductCount = cartService.countProductsInCart(accountId, cartType);
-	     return ResponseEntity.ok(uniqueProductCount);
-	 }
+	@PostMapping("/update-cart-items")
+	public ResponseEntity<String> updateCartItemsToCartType2(@RequestParam Long accountId, @RequestParam int cartType) {
+		try {
+			cartService.updateCartItemsToCartType2(accountId, cartType);
+			return new ResponseEntity<>("Các cart item đã được cập nhật thành cart type 2", HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body("Lỗi khi cập nhật cart type: " + e.getMessage());
+		}
+	}
+
+	@GetMapping("/get-total-quantity-in-cart")
+	public ResponseEntity<Integer> getTotalQuantityInCart(@RequestParam Long accountId, @RequestParam int cartType) {
+		int totalQuantity = cartService.getTotalQuantityInCart(accountId, cartType);
+		return ResponseEntity.ok(totalQuantity);
+	}
+
+	@GetMapping("/count-product-cart")
+	public ResponseEntity<Integer> countProductsInCart(@RequestParam Long accountId, @RequestParam int cartType) {
+		int uniqueProductCount = cartService.countProductsInCart(accountId, cartType);
+		return ResponseEntity.ok(uniqueProductCount);
+	}
 }

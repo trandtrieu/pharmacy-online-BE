@@ -114,22 +114,22 @@ public class ProductFilterController {
 				break;
 			case "price-1":
 				filteredProducts = filterProductsInRange(matchingProducts, BigDecimal.valueOf(0),
-						BigDecimal.valueOf(100));
+						BigDecimal.valueOf(100000));
 				break;
 			case "price-2":
-				filteredProducts = filterProductsInRange(matchingProducts, BigDecimal.valueOf(100),
-						BigDecimal.valueOf(200));
+				filteredProducts = filterProductsInRange(matchingProducts, BigDecimal.valueOf(100000),
+						BigDecimal.valueOf(200000));
 				break;
 			case "price-3":
-				filteredProducts = filterProductsInRange(matchingProducts, BigDecimal.valueOf(200),
-						BigDecimal.valueOf(500));
+				filteredProducts = filterProductsInRange(matchingProducts, BigDecimal.valueOf(200000),
+						BigDecimal.valueOf(500000));
 				break;
 			case "price-4":
-				filteredProducts = filterProductsInRange(matchingProducts, BigDecimal.valueOf(500),
-						BigDecimal.valueOf(1000));
+				filteredProducts = filterProductsInRange(matchingProducts, BigDecimal.valueOf(500000),
+						BigDecimal.valueOf(1000000));
 				break;
 			case "price-5":
-				filteredProducts = filterProductsGreaterThan(matchingProducts, BigDecimal.valueOf(1000));
+				filteredProducts = filterProductsGreaterThan(matchingProducts, BigDecimal.valueOf(1000000));
 				break;
 			}
 		}

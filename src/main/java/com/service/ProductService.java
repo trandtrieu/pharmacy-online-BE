@@ -153,6 +153,7 @@ public class ProductService {
 		}
 	}
 
+
 	public Product getProductById(Integer productId) {
 		return productRepository.findById(productId).orElse(null);
 	}

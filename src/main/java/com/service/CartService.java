@@ -80,6 +80,27 @@ public class CartService {
 		cartRepository.save(cart);
 	}
 
+    public void updateCartItemsToCartType2(Long accountId, int cartType) {
+        try {
+            Account account = accountRepository.findById(accountId)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản"));
+
+            Cart cart = account.getCart();
+            if (cart != null && cart.getCartItems() != null && !cart.getCartItems().isEmpty()) {
+                for (CartItem cartItem : cart.getCartItems()) {
+                    if (cartItem.getCart_type() == cartType) {
+                        cartItem.setCart_type(2);
+                    }
+                }
+                cartRepository.save(cart);
+            } else {
+                throw new RuntimeException("Giỏ hàng trống hoặc không tồn tại.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi cập nhật cart type: " + e.getMessage());
+        }
+    }
+
 	public List<CartItemDTO> getCartItems(Long accountId, int cart_type) {
 		Account account = accountRepository.findById(accountId).orElse(null);
 
@@ -96,6 +117,8 @@ public class CartService {
 					productDetailDTO.setName(product.getP_name());
 					productDetailDTO.setPrice(product.getP_price());
 					productDetailDTO.setBrand(product.getP_brand());
+					productDetailDTO.setQuantity(product.getP_quantity());
+
 					productDetailDTO.setCategory_id(product.getCategory().getCategory_id());
 					productDetailDTO.setCategory_name(product.getCategory().getCategory_name());
 					List<String> imageUrls = product.getImages().stream().map(Product_image::getImageUrl)
@@ -226,8 +249,8 @@ public class CartService {
 		BigDecimal totalCost = getTotalCostByAccountAndType(accountId, cartType);
 
 		BigDecimal shippingCost = new BigDecimal("0");
-		BigDecimal freeShippingThreshold = new BigDecimal("100");
-		BigDecimal shippingRate = new BigDecimal("10");
+		BigDecimal freeShippingThreshold = new BigDecimal("300000");
+		BigDecimal shippingRate = new BigDecimal("30000");
 
 		if (totalCost.compareTo(freeShippingThreshold) < 0) {
 			shippingCost = shippingRate;
