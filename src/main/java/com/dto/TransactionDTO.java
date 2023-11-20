@@ -1,7 +1,5 @@
 package com.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentRequest {
-	private String amount;
+public class TransactionDTO {
+	private Long amount;
 	private String paymentMethod;
 	private String deliveryMethod;
 	private String name;
-	private String phone;
 	private String address;
+	private String phone;
 	private String note;
 }
-
