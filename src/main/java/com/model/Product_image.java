@@ -20,6 +20,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "product_image")
 public class Product_image  {
+
 	@Id
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
 	private int image_id;

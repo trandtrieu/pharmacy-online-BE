@@ -24,6 +24,7 @@ public class DiscountCode {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	@Column
 	private String code;
 	
@@ -35,8 +36,13 @@ public class DiscountCode {
 	
 	@Column
 	private int timesUsable;
+
+	@Column
+	private String days;
 	
 	@Column
 	private int status;
+
+
 
 }
