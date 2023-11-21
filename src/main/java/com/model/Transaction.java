@@ -17,7 +17,11 @@ public class Transaction {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private Long amount;
-	private String bankCode;
-	private String orderInfo;
-	private String responseCode;
+	private String paymentMethod;
+	private String deliveryMethod;
+	private String name;
+	private String address;
+	private String phone;
+	private String status;
+	private String note;
 }

@@ -1,6 +1,9 @@
 package com.controller;
 
+
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -12,12 +15,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,32 +32,59 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.config.Config;
+import com.dto.CartItemDTO;
 import com.dto.PaymentRequest;
 import com.dto.PaymentResDTO;
-import com.dto.TransactionStatusDTO;
+import com.dto.TransactionDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.model.OrderInfo;
 import com.model.Transaction;
+import com.repository.OrderRepository;
+import com.repository.TransactionRepository;
 import com.service.TransactionService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/payment")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PaymentController {
-	
+
 	@Autowired
 	TransactionService transactionService;
+
+	@Autowired
+	private TransactionRepository transactionRepository;
+
+	@Autowired
+	private OrderRepository orderRepository;
 	
 	Date date = new Date();
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 	String formattedDate = dateFormat.format(date);
 
-	
-	
 	@PostMapping("/create_payment")
-	public ResponseEntity<?> createPayment(HttpServletRequest req,@RequestBody PaymentRequest paymentRequest) throws UnsupportedEncodingException {
+	public ResponseEntity<?> createPayment(HttpServletRequest req, @RequestBody PaymentRequest paymentRequest)
+			throws UnsupportedEncodingException, JsonMappingException, JsonProcessingException {
 		
+		OrderInfo order = new OrderInfo();
+		order.setAddress(paymentRequest.getAddress());
+		order.setAmount(paymentRequest.getAmount());
+		order.setDeliveryMethod(paymentRequest.getDeliveryMethod());
+		order.setName(paymentRequest.getName());
+		order.setNote(paymentRequest.getNote());
+		order.setPaymentMethod(paymentRequest.getPaymentMethod());
+		order.setPhone(paymentRequest.getPhone());
+		
+		OrderInfo result = orderRepository.save(order);
+		
+
 		String orderType = "other";
-		long amount = Integer.parseInt(paymentRequest.getAmount())*100;
+		long amount = Integer.parseInt(paymentRequest.getAmount()) * 100;
 //		long amount = 100000;
 		String vnp_TxnRef = Config.getRandomNumber(8);
 		String vnp_IpAddr = Config.getIpAddress(req);
@@ -68,7 +102,7 @@ public class PaymentController {
 //            vnp_Params.put("vnp_BankCode", bankCode);
 //        }
 		vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-		vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
+		vnp_Params.put("vnp_OrderInfo", result.getId().toString());
 		vnp_Params.put("vnp_OrderType", orderType);
 
 //        String locate = req.getParameter("language");
@@ -121,35 +155,39 @@ public class PaymentController {
 		paymentResDTO.setStatus("ok");
 		paymentResDTO.setMessage("Successfully");
 		paymentResDTO.setURL(paymentUrl);
+		System.out.println(paymentUrl);
 
 		return ResponseEntity.status(HttpStatus.OK).body(paymentResDTO);
 	}
 
-	@GetMapping("/payment_info")
-	public ResponseEntity<?> transaction(@RequestParam(value = "vnp_Amount",required = false , defaultValue = "0" ) Long amount,
-            @RequestParam(value = "vnp_BankCode" ,required = false , defaultValue = "0" ) String bankCode,
-            @RequestParam(value = "vnp_OrderInfo" ,required = false , defaultValue = "0" ) String order,
-            @RequestParam(value = "vnp_ResponseCode" ,required = false , defaultValue = "") String responseCode) {
-		TransactionStatusDTO transactionStatusDTO = new TransactionStatusDTO();
-		if (responseCode.equals("00")) {
-			transactionStatusDTO.setStatus("OK");
-			transactionStatusDTO.setMessage("Successfully");
-			transactionStatusDTO.setData("");
-			
-			Transaction transaction = new Transaction();
-			transaction.setAmount(amount);
-			transaction.setBankCode(bankCode);
-			transaction.setOrderInfo(order);
-			transaction.setResponseCode(responseCode);
-			transactionService.saveTransaction(transaction);
-			
-		} else {
-			transactionStatusDTO.setStatus("Not OK");
-			transactionStatusDTO.setMessage("Don't Successfully");
-			transactionStatusDTO.setData("");
-		}
-
-		return ResponseEntity.status(HttpStatus.OK).body(transactionStatusDTO);
+	
+	@PostMapping("/save-url")
+	public ResponseEntity<Transaction> saveUrl(@RequestBody TransactionDTO dto) {
+		Transaction entity = new Transaction();
+		entity.setAddress(dto.getAddress());
+		entity.setAmount(dto.getAmount());
+		entity.setDeliveryMethod(dto.getDeliveryMethod());
+		entity.setName(dto.getName());
+		entity.setPaymentMethod(dto.getPaymentMethod());
+		System.out.println(dto.getPaymentMethod());
+		entity.setPhone(dto.getPhone());
+		entity.setNote(dto.getNote());
+		entity.setStatus("Successfully");
+		Transaction result = transactionRepository.save(entity);
+		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
-	 
+	
+	@GetMapping("/order/{orderId}")
+	public OrderInfo getOrderById(@PathVariable Long orderId) {
+		OrderInfo result = orderRepository.findById(orderId).orElse(null);
+		
+		 System.out.println(result);
+		 
+		return result;
+	}
+	
+	
+	
+	
+	
 }

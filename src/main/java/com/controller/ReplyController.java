@@ -63,6 +63,8 @@ public class ReplyController {
 			}
 			replydto.setUser_id(feedback.getUser().getId());
 			replydto.setUser_name(reply.getAccount().getUsername());
+			replydto.setAvatar(reply.getAccount().getAvatar());
+
 			replydto.setReply_feedback(reply.getReply_feedback());
 			replyDTOs.add(replydto);
 		}

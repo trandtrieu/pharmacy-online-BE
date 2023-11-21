@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,14 @@ public class PrescriptionController {
 				.map(prescription -> createPrescriptionDTO(prescription)).collect(Collectors.toList());
 	}
 
+	@GetMapping("/list")
+	public List<PrescriptionDTO> getAllPrescriptions(@RequestParam(required = false) Integer status) {
+		return prescriptionRepository.findAll().stream().filter(p -> status == null || p.getStatus() == status)
+				.map(this::createPrescriptionDTO).sorted(Comparator.comparing(PrescriptionDTO::getCreatedDate)
+						.thenComparing(PrescriptionDTO::getCreatedTime))
+				.collect(Collectors.toList());
+	}
+
 	@PostMapping("/create")
 	public ResponseEntity<PrescriptionDTO> createPrescription(@ModelAttribute Prescription prescription,
 			@RequestParam("account_id") Long accountId, @RequestParam("imageFile") MultipartFile imageFile) {
@@ -89,7 +98,7 @@ public class PrescriptionController {
 		if (imageFile != null) {
 			ResponseEntity<String> uploadResponse = uploadImage(imageFile);
 			if (uploadResponse.getStatusCode() != HttpStatus.OK) {
-				return uploadResponse; 
+				return uploadResponse;
 			}
 			updatedPrescription.setImageUrls(imageFile.getOriginalFilename());
 		} else {
@@ -138,25 +147,43 @@ public class PrescriptionController {
 
 	@PostMapping("/uploadImage")
 	public ResponseEntity<String> uploadImage(@RequestParam("imageFile") MultipartFile imageFile) {
-	    if (imageFile != null) {
-	        String uploadFolderPath1 = "D:/Documents/OJT/mock-project/pharmacy-online-fe/public/assets/images"; // Thay đổi thành đường dẫn của thư mục đầu tiên
-	        String uploadFolderPath2 = "D:/Documents/OJT/mock-project/pharmacy-online-admin/public/assets/images"; // Thay đổi thành đường dẫn của thư mục thứ hai
-	        String fileName = imageFile.getOriginalFilename();
+		if (imageFile != null) {
+			String uploadFolderPath1 = "D:/Documents/OJT/mock-project/pharmacy-online-fe/public/assets/images"; // Thay
+																												// đổi
+																												// thành
+																												// đường
+																												// dẫn
+																												// của
+																												// thư
+																												// mục
+																												// đầu
+																												// tiên
+			String uploadFolderPath2 = "D:/Documents/OJT/mock-project/pharmacy-online-admin/public/assets/images"; // Thay
+																													// đổi
+																													// thành
+																													// đường
+																													// dẫn
+																													// của
+																													// thư
+																													// mục
+																													// thứ
+																													// hai
+			String fileName = imageFile.getOriginalFilename();
 
-	        try {
-	            Path imagePath1 = Paths.get(uploadFolderPath1, fileName);
-	            Files.write(imagePath1, imageFile.getBytes());
+			try {
+				Path imagePath1 = Paths.get(uploadFolderPath1, fileName);
+				Files.write(imagePath1, imageFile.getBytes());
 
-	            Path imagePath2 = Paths.get(uploadFolderPath2, fileName);
-	            Files.write(imagePath2, imageFile.getBytes());
+				Path imagePath2 = Paths.get(uploadFolderPath2, fileName);
+				Files.write(imagePath2, imageFile.getBytes());
 
-	            return new ResponseEntity<>("Image uploaded successfully to both folders", HttpStatus.OK);
-	        } catch (IOException e) {
-	            return new ResponseEntity<>("Failed to upload the image", HttpStatus.INTERNAL_SERVER_ERROR);
-	        }
-	    } else {
-	        return new ResponseEntity<>("No image file provided", HttpStatus.BAD_REQUEST);
-	    }
+				return new ResponseEntity<>("Image uploaded successfully to both folders", HttpStatus.OK);
+			} catch (IOException e) {
+				return new ResponseEntity<>("Failed to upload the image", HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			return new ResponseEntity<>("No image file provided", HttpStatus.BAD_REQUEST);
+		}
 	}
 
 }

@@ -70,6 +70,7 @@ public class FeedbackController {
 				feedbackDTO.setP_name(product.getP_name());
 				feedbackDTO.setUser_id(feedback.getUser().getId());
 				feedbackDTO.setUser_name(feedback.getUser().getUsername());
+				feedbackDTO.setAvatar(feedback.getUser().getAvatar());
 				feedbackDTOs.add(feedbackDTO);
 			}
 		}

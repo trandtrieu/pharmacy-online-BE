@@ -12,7 +12,7 @@ public class ReplyDTO {
 	private int feedback_id;
 	private long user_id;
 	private String user_name;
-	
+	private String avatar;
 	public ReplyDTO() {
 		super();
 	}
@@ -68,6 +68,12 @@ public class ReplyDTO {
 	}
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
+	}
+	public String getAvatar() {
+		return avatar;
+	}
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	

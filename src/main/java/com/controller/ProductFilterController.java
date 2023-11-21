@@ -48,7 +48,58 @@ public class ProductFilterController {
 		}
 		return filteredProducts;
 	}
+	@GetMapping("/products/filterByCategory")
+	public ResponseEntity<List<ProductDetailDTO>> searchProductByCategory(
+	        @RequestParam("priceFilter") String priceFilter,
+	        @RequestParam(value = "categoryId", required = false) Long categoryId) {
 
+	    List<ProductDetailDTO> matchingProducts = new ArrayList<>();
+
+	    List<Product> products;
+	    if (categoryId != null) {
+	        products = productRepository.findProductsByCategoryId(categoryId);
+	    } else {
+	        products = productRepository.findAll();
+	    }
+
+	    for (Product product : products) {
+	        
+	        if (categoryId == null || product.getCategory().getCategory_id() == categoryId.intValue()) {
+	            matchingProducts.add(createProductDetailDTO(product));
+	        }
+	    }
+
+	    List<ProductDetailDTO> filteredProducts = new ArrayList<>();
+
+	    if (!matchingProducts.isEmpty()) {
+	        switch (priceFilter) {
+	            case "price-all":
+	                filteredProducts = matchingProducts;
+	                break;
+	            case "price-1":
+	                filteredProducts = filterProductsInRange(matchingProducts, BigDecimal.valueOf(0),
+	                        BigDecimal.valueOf(100000));
+	                break;
+	            case "price-2":
+	                filteredProducts = filterProductsInRange(matchingProducts, BigDecimal.valueOf(100000),
+	                        BigDecimal.valueOf(200000));
+	                break;
+	            case "price-3":
+	                filteredProducts = filterProductsInRange(matchingProducts, BigDecimal.valueOf(200000),
+	                        BigDecimal.valueOf(500000));
+	                break;
+	            case "price-4":
+	                filteredProducts = filterProductsInRange(matchingProducts, BigDecimal.valueOf(500000),
+	                        BigDecimal.valueOf(1000000));
+	                break;
+	            case "price-5":
+	                filteredProducts = filterProductsGreaterThan(matchingProducts, BigDecimal.valueOf(1000000));
+	                break;
+	        }
+	    }
+
+	    return !filteredProducts.isEmpty() ? ResponseEntity.ok(filteredProducts) : ResponseEntity.notFound().build();
+	}
 	private List<ProductDetailDTO> filterProductsGreaterThan(List<ProductDetailDTO> products, BigDecimal minPrice) {
 		List<ProductDetailDTO> filteredProducts = new ArrayList<>();
 		for (ProductDetailDTO product : products) {

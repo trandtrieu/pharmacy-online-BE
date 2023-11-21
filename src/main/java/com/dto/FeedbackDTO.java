@@ -23,6 +23,7 @@ public class FeedbackDTO {
 	private String p_name;
 	private long user_id;
 	private String user_name;
+	private String avatar;
 //	private List<Reply> reply;
 
 	
