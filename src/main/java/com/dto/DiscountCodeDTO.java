@@ -24,4 +24,6 @@ public class DiscountCodeDTO {
 	private int timesUsable;
 	
 	private int status;
+
+	private Long condition;
 }
