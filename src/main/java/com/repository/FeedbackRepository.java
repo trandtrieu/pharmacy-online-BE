@@ -13,5 +13,8 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Integer> {
         @Param("rating") int rating,
         @Param("productId") int productId
     );
+    
+    @Query("SELECT COUNT(f) FROM Feedback f WHERE f.product.product_id = :productId")
+    int countFeedbacksByProductId(@Param("productId") int productId);
 }
 

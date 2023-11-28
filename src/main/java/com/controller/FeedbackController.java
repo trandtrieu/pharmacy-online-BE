@@ -80,7 +80,6 @@ public class FeedbackController {
 //	"/pharmacy-online/product/feedback/"
 	// delete feedback
 	@DeleteMapping("delete/{feedbackId}/{user_id}")
-
 	public ResponseEntity<String> deleteFeedback(@PathVariable int feedbackId, @PathVariable long user_id) {
 		Feedback feedback = feedbackRepository.findById(feedbackId).orElse(null);
 		Account account = accountRepository.findById(user_id).orElse(null);
@@ -152,6 +151,10 @@ public class FeedbackController {
 
 		return average;
 	}
+	@GetMapping("/{productId}/countFeedback")
+	public int countFeedbacksByProductId(@PathVariable int productId) {
+        return feedbackRepository.countFeedbacksByProductId(productId);
+    }
 
 	//
 	@GetMapping("/{productId}/{rating}")

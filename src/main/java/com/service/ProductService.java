@@ -89,8 +89,13 @@ public class ProductService {
 			product.setP_name(productDetailDTO.getName());
 			product.setP_price(productDetailDTO.getPrice());
 			product.setP_brand(productDetailDTO.getBrand());
-			product.setP_status(productDetailDTO.getStatus());
 			product.setP_quantity(productDetailDTO.getQuantity());
+			if(product.getP_quantity()==0) {
+				product.setP_status(0);
+			}else {
+				product.setP_status(1);
+			}
+//			product.setP_status(productDetailDTO.getStatus());
 			product.setP_type(productDetailDTO.getType());
 			Category category = categoryRepository.findById(productDetailDTO.getCategory_id()).orElse(null);
 			// Kiểm tra xem category có tồn tại không
@@ -122,17 +127,7 @@ public class ProductService {
 
 	        // Lấy danh sách hình ảnh mới từ DTO
 	        List<String> newImageUrls = productDetailDTO.getImageUrls();
-//			if (imageUrls != null && !imageUrls.isEmpty()) {
-//				List<Product_image> productImages = new ArrayList<>();
-//
-//				for (String imageUrl : imageUrls) {
-//					Product_image productImage = new Product_image();
-//					productImage.setImageUrl(imageUrl);
-//					productImage.setProduct(product);
-//					productImages.add(productImage);
-//				}
-//				productImageRepository.saveAll(productImages);
-//			}
+
 	        List<Product_image> productImages = new ArrayList<>();
 	        if (newImageUrls != null && !newImageUrls.isEmpty()) {
 	            // Xóa các ảnh cũ
