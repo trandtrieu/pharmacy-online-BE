@@ -160,4 +160,8 @@ public class FeedbackController {
 		return feedbackRepository.countByRatingAndProductId(rating, productId);
 	}
 
+	@GetMapping("/{productId}/countFeedback")
+	public int countFeedbacksByProductId(@PathVariable int productId) {
+		return feedbackRepository.countFeedbacksByProductId(productId);
+	}
 }

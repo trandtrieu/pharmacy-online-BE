@@ -52,6 +52,8 @@ public class SecurityConfig {
 						"/pharmacy-online/admin/prescriptions/**",
 						"/pharmacy-online/admin/category/**",
 						"/pharmacy-online/admin/cart/**",
+						"/pharmacy-online/admin/discount-code/**",
+						
 "pharmacy-online/products/filter/rangefilt04",
 						"/pharmacy-online/products/**", 
 						"/pharmacy-online/products/filterByCategory", 
@@ -70,7 +72,8 @@ public class SecurityConfig {
 						"/pharmacy-online/prescriptions/update/{prescriptionId}",
 						"/pharmacy-online/reply/byFeedbackId/{feedbackId}", "/pharmacy-online/product/feedback/**",
 						"/pharmacy-online/category/*", "/un-auth/welcome", "/auth/register", "/auth/token",
-						"/auth/forgot-password", "/auth/set-password").permitAll().anyRequest().authenticated())
+						"/auth/forgot-password", "/auth/set-password").permitAll()
+						.anyRequest().authenticated())
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class).build();

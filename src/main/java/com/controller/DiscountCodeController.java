@@ -1,5 +1,7 @@
 package com.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.DiscountCodeDTO;
 import com.model.DiscountCode;
+import com.repository.DiscountCodeRepository;
 import com.service.DiscountCodeService;
 
 @RestController
@@ -27,19 +30,23 @@ public class DiscountCodeController {
 		DiscountCode discountCode = discountCodeService.createDiscountCode(discountCodeDTO);
 		return ResponseEntity.ok(discountCode);
 	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<DiscountCode> getDiscountCodeById(@PathVariable Long id) {
+		DiscountCode discountCode = discountCodeService.getDiscountCodeById(id);
+
+		if (discountCode != null) {
+			return ResponseEntity.ok(discountCode);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
 	
-    @GetMapping("/{id}")
-    public ResponseEntity<DiscountCode> getDiscountCodeById(@PathVariable Long id) {
-        DiscountCode discountCode = discountCodeService.getDiscountCodeById(id);
-        
-        if (discountCode != null) {
-            return ResponseEntity.ok(discountCode);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    
-    
+	@GetMapping("/by-account/{accountId}")
+	public ResponseEntity<List<DiscountCodeDTO>> getDiscountCodesByAccountId(@PathVariable Long accountId) {
+	    List<DiscountCodeDTO> discountCodes = discountCodeService.getDiscountCodesByAccountId(accountId);
+	    return ResponseEntity.ok(discountCodes);
+	}
 
 
 }

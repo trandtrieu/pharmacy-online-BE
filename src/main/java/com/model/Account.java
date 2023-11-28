@@ -1,6 +1,7 @@
 package com.model;
 
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -9,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -63,6 +65,11 @@ public class Account {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
 	private List<Reply> Replys;
+	
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
 	private List<DeliveryAddress> address;
+	
+	@ManyToMany(mappedBy = "accounts")
+	private Set<DiscountCode> discountCodes;
 }
+

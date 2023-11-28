@@ -6,5 +6,6 @@ import com.model.DiscountCode;
 
 public interface DiscountCodeRepository extends JpaRepository<DiscountCode, Long> {
     DiscountCode findByCode(String code);
+    
 }
 

@@ -89,8 +89,14 @@ public class ProductService {
 			product.setP_name(productDetailDTO.getName());
 			product.setP_price(productDetailDTO.getPrice());
 			product.setP_brand(productDetailDTO.getBrand());
-			product.setP_status(productDetailDTO.getStatus());
+//			product.setP_status(productDetailDTO.getStatus());
 			product.setP_quantity(productDetailDTO.getQuantity());
+			if(product.getP_quantity()==0) {
+				product.setP_status(0);
+			}else {
+				product.setP_status(1);
+			}
+//			product.setP_status(productDetailDTO.getStatus());
 			product.setP_type(productDetailDTO.getType());
 			Category category = categoryRepository.findById(productDetailDTO.getCategory_id()).orElse(null);
 			// Kiểm tra xem category có tồn tại không

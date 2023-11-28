@@ -215,7 +215,7 @@ public class CartService {
 
 			int uniqueProductCount = 0;
 			for (CartItem cartItem : cartItems) {
-				if (cartItem.getCart_type() == cart_type) { // Check if cart_type matches
+				if (cartItem.getCart_type() == cart_type) {
 					uniqueProductCount++;
 				}
 			}
@@ -258,18 +258,7 @@ public class CartService {
 
 		return totalCost.add(shippingCost);
 	}
-
-	public BigDecimal applyDiscountCode(BigDecimal totalCost, DiscountCode discountCode) {
-		if (discountCode != null && discountCode.getExpiryDate().isAfter(LocalDateTime.now())
-				&& discountCode.getTimesUsable() > 0) {
-			BigDecimal discountAmount = totalCost
-					.multiply(BigDecimal.valueOf(discountCode.getDiscountPercentage() / 100));
-			totalCost = totalCost.subtract(discountAmount);
-			discountCode.setTimesUsable(discountCode.getTimesUsable() - 1);
-		}
-		return totalCost;
-	}
-
+	
 	public DiscountCalculationResultDTO applyDiscountCodeToCart(BigDecimal totalCartCost, DiscountCode discountCode) {
 		DiscountCalculationResultDTO result = new DiscountCalculationResultDTO();
 		if (isDiscountCodeValid(discountCode)) {
@@ -277,29 +266,14 @@ public class CartService {
 					totalCartCost.multiply(BigDecimal.valueOf(discountCode.getDiscountPercentage() / 100)));
 			result.setTotalCostAfterDiscount(totalCartCost.subtract(result.getDiscountAmount()));
 			discountCode.setTimesUsable(discountCode.getTimesUsable() - 1);
-			discountCodeService.updateDiscountCode(discountCode); // Update discount code info
+			discountCodeService.updateDiscountCode(discountCode); 
 		}
 		return result;
 	}
 
-//	public BigDecimal applyDiscountCodeToCart(BigDecimal totalCartCost, DiscountCode discountCode) {
-//	    if (isDiscountCodeValid(discountCode)) {
-//	        totalCartCost = applyDiscount(totalCartCost, discountCode);
-//	    }
-//	    return totalCartCost;
-//	}
-
-//	private BigDecimal applyDiscount(BigDecimal totalCartCost, DiscountCode discountCode) {
-//	    BigDecimal discountAmount = totalCartCost.multiply(BigDecimal.valueOf(discountCode.getDiscountPercentage() / 100));
-//	    totalCartCost = totalCartCost.subtract(discountAmount);
-//	    discountCode.setTimesUsable(discountCode.getTimesUsable() - 1);
-//	    discountCodeService.updateDiscountCode(discountCode); // Update discount code info
-//	    return totalCartCost;
-//	}
-
 	public boolean isDiscountCodeValid(DiscountCode discountCode) {
 		return discountCode.getExpiryDate().isAfter(LocalDateTime.now()) && discountCode.getTimesUsable() > 0
-				&& discountCode.getStatus() == 1; // Assuming status 1 means the code is active
+				&& discountCode.getStatus() == 1; 
 	}
 
 }

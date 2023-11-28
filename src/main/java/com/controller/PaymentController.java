@@ -175,8 +175,7 @@ public class PaymentController {
 		entity.setStatus("Successfully");
 		Transaction result = transactionRepository.save(entity);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
-	}
-	
+	}	
 	@GetMapping("/order/{orderId}")
 	public OrderInfo getOrderById(@PathVariable Long orderId) {
 		OrderInfo result = orderRepository.findById(orderId).orElse(null);

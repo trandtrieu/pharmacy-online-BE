@@ -108,19 +108,7 @@ public class CartController {
 		return ResponseEntity.ok(totalCartCost);
 	}
 
-	@GetMapping("/get-total-cart-cost-with-shipping-and-discount")
-	public ResponseEntity<BigDecimal> getTotalCartCostWithShippingAndDiscount(@RequestParam Long accountId,
-			@RequestParam int cartType, @RequestParam(required = false) Long discountCodeId) {
-		BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeWithShipping(accountId, cartType);
 
-		if (discountCodeId != null) {
-			DiscountCode discountCode = discountCodeService.getDiscountCodeById(discountCodeId);
-			if (discountCode != null) {
-				totalCartCost = cartService.applyDiscountCode(totalCartCost, discountCode);
-			}
-		}
-		return ResponseEntity.ok(totalCartCost);
-	}
 
 	@GetMapping("/get-shipping-cost")
 	public ResponseEntity<BigDecimal> getShippingCost(@RequestParam Long accountId, @RequestParam int cartType) {
@@ -136,44 +124,49 @@ public class CartController {
 		return ResponseEntity.ok(shippingCost);
 	}
 
-//	@PostMapping("/apply-discount")
-//	public ResponseEntity<String> applyDiscountCodeToCart1(
-//	    @RequestParam Long accountId,
-//	    @RequestParam int cartType,
-//	    @RequestParam String discountCode) {
-//	    try {
-//	        BigDecimal totalCartCost = cartService.getTotalCostByAccountAndType(accountId, cartType);
-//	        DiscountCode code = discountCodeService.getDiscountCodeByCode(discountCode);
-//	        
-//	        if (code != null && cartService.isDiscountCodeValid(code)) {
-//	            // Áp dụng mã giảm giá
-//	            totalCartCost = cartService.applyDiscountCodeToCart(totalCartCost, code);
-//	            return ResponseEntity.ok("Mã giảm giá đã được áp dụng. Tổng giá giỏ hàng sau khi giảm giá: " + totalCartCost);
-//	        } else {
-//	            return ResponseEntity.badRequest().body("Mã giảm giá không hợp lệ.");
-//	        }
-//	    } catch (Exception e) {
-//	        return ResponseEntity.badRequest().body("Lỗi khi áp dụng mã giảm giá: " + e.getMessage());
-//	    }
-//	}
-	@PostMapping("/apply-discount")
+	@PostMapping("/apply-discount1")
 	public ResponseEntity<DiscountCalculationResultDTO> applyDiscountCodeToCart(@RequestParam Long accountId,
 			@RequestParam int cartType, @RequestParam String discountCode) {
 		try {
 			BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeWithShipping(accountId, cartType);
-			// Get discount code details
 			DiscountCode code = discountCodeService.getDiscountCodeByCode(discountCode);
 
 			if (code != null && cartService.isDiscountCodeValid(code)) {
-				// Apply the discount code
 				DiscountCalculationResultDTO result = cartService.applyDiscountCodeToCart(totalCartCost, code);
 				return ResponseEntity.ok(result);
 			} else {
-				return ResponseEntity.badRequest().body(null); // Or handle invalid code scenario accordingly
+				return ResponseEntity.badRequest().body(null);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(null); // Or handle exception scenario accordingly
+			return ResponseEntity.badRequest().body(null); 
 		}
 	}
+	
+	@PostMapping("/apply-discount")
+	public ResponseEntity<DiscountCalculationResultDTO> applyDiscountCodeToCart1(
+	        @RequestParam Long accountId,
+	        @RequestParam int cartType,
+	        @RequestParam String discountCode
+	) {
+	    try {
+	        BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeWithShipping(accountId, cartType);
+	        DiscountCode code = discountCodeService.getDiscountCodeByCode(discountCode);
+
+	        if (code != null && cartService.isDiscountCodeValid(code)) {
+	            BigDecimal conditionAmount = BigDecimal.valueOf(code.getCondition());
+	            if (totalCartCost.compareTo(conditionAmount) >= 0) {
+	                DiscountCalculationResultDTO result = cartService.applyDiscountCodeToCart(totalCartCost, code);
+	                return ResponseEntity.ok(result);
+	            } else {
+	                return ResponseEntity.badRequest().body(null);
+	            }
+	        } else {
+	            return ResponseEntity.badRequest().body(null);
+	        }
+	    } catch (Exception e) {
+	        return ResponseEntity.badRequest().body(null);
+	    }
+	}
+
 
 }
