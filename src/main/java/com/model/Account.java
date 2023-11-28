@@ -1,17 +1,9 @@
 package com.model;
 
 import java.util.List;
+import java.util.Set;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,6 +45,9 @@ public class Account {
 	@Column(name = "roles")
 	private String roles;
 
+	@Column(name = "status")
+	private int status;
+
 	@Column
 	private String account_image;
 
@@ -73,6 +68,9 @@ public class Account {
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
 	private List<DeliveryAddress> address;
+
+	@ManyToMany(mappedBy = "accounts")
+	private Set<DiscountCode> discountCodes;
 
 
 }

@@ -58,6 +58,7 @@ public class SecurityConfig {
 						"/pharmacy-online/admin/account/**",
 						"/pharmacy-online/admin/discount-code/**",
 						"/pharmacy-online/product/**",
+						"/pharmacy-online/discount-code/allDiscount",
 						"/pharmacy-online/blog/**",
 						"/pharmacy-online/blogs/**", "/pharmacy-online/feedback/*",
 //						"/pharmacy-online/account/img/**",

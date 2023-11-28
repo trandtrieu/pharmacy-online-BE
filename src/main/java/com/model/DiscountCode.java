@@ -37,10 +37,10 @@ public class DiscountCode {
 	private int status;
 
 	@Column
-	private Long codition;
+	private Long condition;
 
-//	@ManyToMany
-//	@JoinTable(joinColumns = @JoinColumn(name = "discount_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
-//	private Set<Account> accounts;
+	@ManyToMany
+	@JoinTable(name = "discount_account", joinColumns = @JoinColumn(name = "discount_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
+	private Set<Account> accounts;
 
 }

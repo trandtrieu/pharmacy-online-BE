@@ -14,6 +14,8 @@ import com.dto.DiscountCodeDTO;
 import com.model.DiscountCode;
 import com.service.DiscountCodeService;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/pharmacy-online/discount-code")
@@ -37,6 +39,23 @@ public class DiscountCodeController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/th/{id}")
+    public ResponseEntity<DiscountCodeDTO> getDiscountCodeDTOByIdTh(@PathVariable Long id){
+        return ResponseEntity.ok(discountCodeService.getDiscountCode(id));
+    }
+
+    @GetMapping("/dtoa/{did}/{aid}")
+    public ResponseEntity<String> addDiscountToAccount(@PathVariable Long did, @PathVariable Long aid){
+        discountCodeService.addDiscountToAccount(did, aid);
+        return ResponseEntity.ok("Data saved");
+    }
+
+
+    @GetMapping("/allDiscount")
+    public ResponseEntity<List<DiscountCodeDTO>> getAllDiscount(){
+        return ResponseEntity.ok(discountCodeService.getAllDiscountCode());
     }
 
 }
