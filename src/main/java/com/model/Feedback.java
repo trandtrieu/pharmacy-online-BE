@@ -37,7 +37,7 @@ public class Feedback {
 	@Column(name = "rating")
     private int rating;
     
-    @Column(name = "comment")
+    @Column(name = "comment", columnDefinition = "nvarchar(max)")
     private String comment;
     
     @Column(name = "created_at")

@@ -19,7 +19,7 @@ public class Reply {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int reply_id;
 	
-	@Column
+	@Column(columnDefinition = "nvarchar(max)")
 	private String reply_feedback;
 	
 	@Column(name = "created_at")

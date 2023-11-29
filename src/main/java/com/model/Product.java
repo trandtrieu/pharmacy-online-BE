@@ -39,7 +39,8 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int product_id;
-	@Column
+	
+	@Column(columnDefinition = "nvarchar(max)")
 	private String p_name;
 	@Column
 	private BigDecimal p_price;

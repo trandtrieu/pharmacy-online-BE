@@ -38,8 +38,6 @@ public class ReplyController {
 	@Autowired
 	private AccountRepository accountRepository;
 
-	
-	
 	// get reply list
 	@GetMapping("/byFeedbackId/{feedbackId}")
 	public List<ReplyDTO> getRepliesByFeedbackId(@PathVariable int feedbackId) {
@@ -64,7 +62,7 @@ public class ReplyController {
 			replydto.setUser_id(feedback.getUser().getId());
 			replydto.setUser_name(reply.getAccount().getUsername());
 			replydto.setAvatar(reply.getAccount().getAvatar());
-
+			replydto.setRoles(reply.getAccount().getRoles());
 			replydto.setReply_feedback(reply.getReply_feedback());
 			replyDTOs.add(replydto);
 		}
@@ -101,7 +99,7 @@ public class ReplyController {
 			}
 			ReplyDTO.setFeedback_id(feedbackId);
 			reply.setAccount(accountRepository.findById(user_id).orElse(null));
-			
+
 			ReplyDTO.setUser_name(reply.getAccount().getUsername());
 			reply.setFeedback(feedbackRepository.findById(ReplyDTO.getFeedback_id()).orElse(null));
 			replyRepository.save(reply);

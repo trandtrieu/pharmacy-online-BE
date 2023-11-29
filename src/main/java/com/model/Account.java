@@ -27,7 +27,7 @@ public class Account {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Column(name = "name")
+	@Column(name = "name", columnDefinition = "nvarchar(max)")
 	private String name;
 	
 	@Column(name = "username")
@@ -50,7 +50,9 @@ public class Account {
 
 	@Column(name = "roles")
 	private String roles;
-
+	
+	@Column(name = "status")
+	private int status;
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private WishList wishList;
 

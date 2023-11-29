@@ -71,6 +71,8 @@ public class FeedbackController {
 				feedbackDTO.setUser_id(feedback.getUser().getId());
 				feedbackDTO.setUser_name(feedback.getUser().getUsername());
 				feedbackDTO.setAvatar(feedback.getUser().getAvatar());
+				feedbackDTO.setRoles(feedback.getUser().getRoles());
+
 				feedbackDTOs.add(feedbackDTO);
 			}
 		}

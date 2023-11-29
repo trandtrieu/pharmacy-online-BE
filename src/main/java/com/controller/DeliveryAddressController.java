@@ -88,16 +88,21 @@ public class DeliveryAddressController {
 	public ResponseEntity<?> addDeliveryAddress(@PathVariable long user_id,
 			@RequestBody DeliveryAddressDTO deliveryAddressDTO) {
 		Account account = accountRepository.findById(user_id).orElse(null);
+		DeliveryAddress deliveryAddress = new DeliveryAddress();
 		if (account == null) {
 			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 		} else {
-			DeliveryAddress deliveryAddress = new DeliveryAddress();
 			deliveryAddress.setAccount(account);
 			deliveryAddress.setRecipient_full_name(deliveryAddressDTO.getRecipient_full_name());
 			deliveryAddress.setRecipient_phone_number(deliveryAddressDTO.getRecipient_phone_number());
 			deliveryAddress.setSpecific_address(deliveryAddressDTO.getSpecific_address());
 			deliveryAddressRepository.save(deliveryAddress);
 		}
+		 List<DeliveryAddress> userAddresses = deliveryAddressRepository.findByAccountId(user_id);
+	        if (userAddresses.size() == 1) {
+	        	deliveryAddress.setStatus_default(1);
+	            deliveryAddressRepository.save(deliveryAddress);
+	        }
 		return new ResponseEntity<>(deliveryAddressDTO, HttpStatus.OK);
 
 	}

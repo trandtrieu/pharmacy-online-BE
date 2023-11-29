@@ -30,5 +30,8 @@ public class AccountDTO {
 
 	private String phone;
 
+	private String roles;
+
+	private int status;
 
 }

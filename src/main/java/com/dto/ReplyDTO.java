@@ -13,6 +13,7 @@ public class ReplyDTO {
 	private long user_id;
 	private String user_name;
 	private String avatar;
+	private String roles;
 	public ReplyDTO() {
 		super();
 	}
@@ -74,6 +75,12 @@ public class ReplyDTO {
 	}
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+	public String getRoles() {
+		return roles;
+	}
+	public void setRoles(String roles) {
+		this.roles = roles;
 	}
 
 	

@@ -3,7 +3,10 @@ package com.model;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,11 +36,14 @@ public class OrderInfo  implements Serializable{
     private String deliveryMethod;
     private String name;
     private String phone;
+    @Column(columnDefinition = "nvarchar(max)")
     private String address;
+    @Column(columnDefinition = "nvarchar(max)")
     private String note;
     private String date;
     private String status;
     @OneToMany(mappedBy = "orderInfo", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ProductInfo> products;
     
 }

@@ -80,6 +80,8 @@ public class WishListController {
 				productDetailDTO.setName(product.getP_name());
 				productDetailDTO.setPrice(product.getP_price());
 				productDetailDTO.setBrand(product.getP_brand());
+				productDetailDTO.setQuantity(product.getP_quantity());
+
 				List<String> imageUrls = product.getImages().stream().map(Product_image::getImageUrl)
 						.collect(Collectors.toList());
 

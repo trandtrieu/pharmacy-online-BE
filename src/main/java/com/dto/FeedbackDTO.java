@@ -24,6 +24,7 @@ public class FeedbackDTO {
 	private long user_id;
 	private String user_name;
 	private String avatar;
+	private String roles;
 //	private List<Reply> reply;
 
 	
