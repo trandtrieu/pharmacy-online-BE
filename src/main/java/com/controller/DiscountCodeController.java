@@ -52,7 +52,6 @@ public class DiscountCodeController {
         return ResponseEntity.ok("Data saved");
     }
 
-
     @GetMapping("/allDiscount")
     public ResponseEntity<List<DiscountCodeDTO>> getAllDiscount(){
         return ResponseEntity.ok(discountCodeService.getAllDiscountCode());
