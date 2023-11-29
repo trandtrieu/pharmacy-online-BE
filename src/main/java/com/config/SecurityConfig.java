@@ -53,7 +53,8 @@ public class SecurityConfig {
 						"/pharmacy-online/admin/category/**",
 						"/pharmacy-online/admin/cart/**",
 						"/pharmacy-online/admin/discount-code/**",
-						
+						"/pharmacy-online/admin/order/**",
+
 "pharmacy-online/products/filter/rangefilt04",
 						"/pharmacy-online/products/**", 
 						"/pharmacy-online/products/filterByCategory", 

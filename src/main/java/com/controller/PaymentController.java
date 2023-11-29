@@ -1,9 +1,6 @@
 package com.controller;
 
-
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -15,12 +12,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,20 +23,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.config.Config;
-import com.dto.CartItemDTO;
 import com.dto.PaymentRequest;
 import com.dto.PaymentResDTO;
+import com.dto.ProductInfoDTO;
 import com.dto.TransactionDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.OrderInfo;
+import com.model.ProductInfo;
 import com.model.Transaction;
 import com.repository.OrderRepository;
 import com.repository.TransactionRepository;
@@ -62,16 +54,17 @@ public class PaymentController {
 
 	@Autowired
 	private OrderRepository orderRepository;
-	
+
 	Date date = new Date();
-	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 	String formattedDate = dateFormat.format(date);
 
 	@PostMapping("/create_payment")
 	public ResponseEntity<?> createPayment(HttpServletRequest req, @RequestBody PaymentRequest paymentRequest)
 			throws UnsupportedEncodingException, JsonMappingException, JsonProcessingException {
-		
+
 		OrderInfo order = new OrderInfo();
+		order.setAccountId(paymentRequest.getAccountId());
 		order.setAddress(paymentRequest.getAddress());
 		order.setAmount(paymentRequest.getAmount());
 		order.setDeliveryMethod(paymentRequest.getDeliveryMethod());
@@ -79,9 +72,25 @@ public class PaymentController {
 		order.setNote(paymentRequest.getNote());
 		order.setPaymentMethod(paymentRequest.getPaymentMethod());
 		order.setPhone(paymentRequest.getPhone());
-		
+		order.setDate(formattedDate);
+		order.setStatus("Wait for confirmation");
+		List<ProductInfoDTO> productInfoDTOList = paymentRequest.getProducts();
+		System.out.println("Debug: ProductInfoDTOList - " + productInfoDTOList);
+		List<ProductInfo> productInfoList = new ArrayList<>();
+
+		for (ProductInfoDTO productInfoDTO : productInfoDTOList) {
+			ProductInfo productInfo = new ProductInfo();
+			productInfo.setNameproduct(productInfoDTO.getNameproduct());
+			productInfo.setQuantity(productInfoDTO.getQuantity());
+			productInfo.setPrice(productInfoDTO.getPrice());
+
+			productInfo.setOrderInfo(order);
+			productInfoList.add(productInfo);
+		}
+
+		order.setProducts(productInfoList);
+
 		OrderInfo result = orderRepository.save(order);
-		
 
 		String orderType = "other";
 		long amount = Integer.parseInt(paymentRequest.getAmount()) * 100;
@@ -160,7 +169,6 @@ public class PaymentController {
 		return ResponseEntity.status(HttpStatus.OK).body(paymentResDTO);
 	}
 
-	
 	@PostMapping("/save-url")
 	public ResponseEntity<Transaction> saveUrl(@RequestBody TransactionDTO dto) {
 		Transaction entity = new Transaction();
@@ -175,18 +183,15 @@ public class PaymentController {
 		entity.setStatus("Successfully");
 		Transaction result = transactionRepository.save(entity);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
-	}	
+	}
+
 	@GetMapping("/order/{orderId}")
 	public OrderInfo getOrderById(@PathVariable Long orderId) {
 		OrderInfo result = orderRepository.findById(orderId).orElse(null);
-		
-		 System.out.println(result);
-		 
+
+		System.out.println(result);
+
 		return result;
 	}
-	
-	
-	
-	
-	
+
 }

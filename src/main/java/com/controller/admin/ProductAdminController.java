@@ -68,6 +68,13 @@ public class ProductAdminController {
 
 	    return productsPage.map(this::createProductDetailDTO);
 	}
+	
+	@GetMapping("/list")
+	public List<ProductDetailDTO> getAllProducts() {
+		List<Product> products = productRepository.findAll();
+
+		return products.stream().map(product -> createProductDetailDTO(product)).collect(Collectors.toList());
+	}
 	@PostMapping("/add-product")
 	public ResponseEntity<String> addProduct(@RequestBody ProductDetailDTO productDetailDTO) {
 		productService.addProduct(productDetailDTO);

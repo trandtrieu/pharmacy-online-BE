@@ -1,11 +1,14 @@
 package com.model;
 
 import java.io.Serializable;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +27,7 @@ public class OrderInfo  implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private String accountId;
 	private String amount;
     private String paymentMethod;
     private String deliveryMethod;
@@ -31,5 +35,9 @@ public class OrderInfo  implements Serializable{
     private String phone;
     private String address;
     private String note;
+    private String date;
+    private String status;
+    @OneToMany(mappedBy = "orderInfo", cascade = CascadeType.ALL)
+    private List<ProductInfo> products;
     
 }
