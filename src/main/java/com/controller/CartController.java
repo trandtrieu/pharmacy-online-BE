@@ -107,8 +107,13 @@ public class CartController {
 		BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeWithShipping(accountId, cartType);
 		return ResponseEntity.ok(totalCartCost);
 	}
-
-
+	
+	@GetMapping("/get-total-cart-cost-with-shipping-by-pharmacy")
+	public ResponseEntity<BigDecimal> getTotalCartCostWithShippingByDelivery(@RequestParam Long accountId,
+			@RequestParam int cartType) {
+		BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeShippingByPharmacy(accountId, cartType);
+		return ResponseEntity.ok(totalCartCost);
+	}
 
 	@GetMapping("/get-shipping-cost")
 	public ResponseEntity<BigDecimal> getShippingCost(@RequestParam Long accountId, @RequestParam int cartType) {
@@ -120,36 +125,57 @@ public class CartController {
 		} else {
 			shippingCost = new BigDecimal(30000);
 		}
-
 		return ResponseEntity.ok(shippingCost);
 	}
 
-	@PostMapping("/apply-discount1")
-	public ResponseEntity<DiscountCalculationResultDTO> applyDiscountCodeToCart(@RequestParam Long accountId,
-			@RequestParam int cartType, @RequestParam String discountCode) {
-		try {
-			BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeWithShipping(accountId, cartType);
-			DiscountCode code = discountCodeService.getDiscountCodeByCode(discountCode);
+	@GetMapping("/get-shipping-cost-by-pharmacy")
+	public ResponseEntity<BigDecimal> getShippingCostByDelivery(@RequestParam Long accountId, @RequestParam int cartType) {
+		BigDecimal totalCartCost = cartService.getTotalCostByAccountAndType(accountId, cartType);
+		BigDecimal shippingCost;
 
-			if (code != null && cartService.isDiscountCodeValid(code)) {
-				DiscountCalculationResultDTO result = cartService.applyDiscountCodeToCart(totalCartCost, code);
-				return ResponseEntity.ok(result);
-			} else {
-				return ResponseEntity.badRequest().body(null);
-			}
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(null); 
+		if (totalCartCost.compareTo(new BigDecimal(300000)) >= 0) {
+			shippingCost = BigDecimal.ZERO;
+		} else {
+			shippingCost = new BigDecimal(0);
 		}
+		return ResponseEntity.ok(shippingCost);
 	}
 	
+	
 	@PostMapping("/apply-discount")
-	public ResponseEntity<DiscountCalculationResultDTO> applyDiscountCodeToCart1(
+	public ResponseEntity<DiscountCalculationResultDTO> applyDiscountCodeToCart(
 	        @RequestParam Long accountId,
 	        @RequestParam int cartType,
 	        @RequestParam String discountCode
 	) {
 	    try {
 	        BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeWithShipping(accountId, cartType);
+	        DiscountCode code = discountCodeService.getDiscountCodeByCode(discountCode);
+
+	        if (code != null && cartService.isDiscountCodeValid(code)) {
+	            BigDecimal conditionAmount = BigDecimal.valueOf(code.getCondition());
+	            if (totalCartCost.compareTo(conditionAmount) >= 0) {
+	                DiscountCalculationResultDTO result = cartService.applyDiscountCodeToCart(totalCartCost, code);
+	                return ResponseEntity.ok(result);
+	            } else {
+	                return ResponseEntity.badRequest().body(null);
+	            }
+	        } else {
+	            return ResponseEntity.badRequest().body(null);
+	        }
+	    } catch (Exception e) {
+	        return ResponseEntity.badRequest().body(null);
+	    }
+	}
+	
+	@PostMapping("/apply-discount-by-pharmacy")
+	public ResponseEntity<DiscountCalculationResultDTO> applyDiscountCodeToCartByPharmacy(
+	        @RequestParam Long accountId,
+	        @RequestParam int cartType,
+	        @RequestParam String discountCode
+	) {
+	    try {
+	        BigDecimal totalCartCost = cartService.getTotalCostByAccountAndTypeShippingByPharmacy(accountId, cartType);
 	        DiscountCode code = discountCodeService.getDiscountCodeByCode(discountCode);
 
 	        if (code != null && cartService.isDiscountCodeValid(code)) {

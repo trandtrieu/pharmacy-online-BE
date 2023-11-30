@@ -27,6 +27,7 @@ import com.model.Product_detail;
 import com.model.Product_image;
 import com.model.WishList;
 import com.repository.CartItemRepository;
+import com.repository.OrderRepository;
 import com.repository.ProductDetailRepository;
 import com.repository.ProductImageRepository;
 import com.repository.ProductRepository;
@@ -48,12 +49,14 @@ public class ProductAdminController {
 
 	@Autowired
 	private ProductImageRepository productImageRepository;
-	
+
 	@Autowired
 	private WishListRepository wishListRepositoy;
-	
+
 	@Autowired
 	private CartItemRepository cartItemRepository;
+	@Autowired
+	private OrderRepository orderRepository;
 
 	@GetMapping("/search-list-products")
 	public List<ProductDetailDTO> getAllProductsWithDetailsAndImages() {
@@ -61,20 +64,22 @@ public class ProductAdminController {
 
 		return products.stream().map(product -> createProductDetailDTO(product)).collect(Collectors.toList());
 	}
-	//do paging 
+
+	// do paging
 	@GetMapping("/list-products")
 	public Page<ProductDetailDTO> getAllProductsWithDetailsAndImages(Pageable pageable) {
-	    Page<Product> productsPage = productRepository.findAll(pageable);
+		Page<Product> productsPage = productRepository.findAll(pageable);
 
-	    return productsPage.map(this::createProductDetailDTO);
+		return productsPage.map(this::createProductDetailDTO);
 	}
-	
+
 	@GetMapping("/list")
 	public List<ProductDetailDTO> getAllProducts() {
 		List<Product> products = productRepository.findAll();
 
 		return products.stream().map(product -> createProductDetailDTO(product)).collect(Collectors.toList());
 	}
+
 	@PostMapping("/add-product")
 	public ResponseEntity<String> addProduct(@RequestBody ProductDetailDTO productDetailDTO) {
 		productService.addProduct(productDetailDTO);
@@ -88,54 +93,52 @@ public class ProductAdminController {
 		return ResponseEntity.ok("Sản phẩm đã được cập nhập thành công.");
 
 	}
-	
-	
+
 	@DeleteMapping("/delete-product/{productId}")
-		public ResponseEntity<?> deleteProduct(@PathVariable Integer productId) {
-			try {
-				Product product = productRepository.findById(productId).orElse(null);
+	public ResponseEntity<?> deleteProduct(@PathVariable Integer productId) {
+		try {
+			Product product = productRepository.findById(productId).orElse(null);
 
-				if (product == null) {
-					return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm.");
-				}
-
-				Product_detail productDetail = productDetailRepository.findByProduct(product);
-				List<Product_image> productImages = productImageRepository.findByProduct(product);
-				CartItem cartItem = cartItemRepository.findByProduct(product);
-				Set<WishList> wishLists = wishListRepositoy.findByProducts(product);
-
-				// Remove product from wishlists
-				if (wishLists != null) {
-					for (WishList wishList : wishLists) {
-						wishList.removeProduct(product);
-					}
-					wishListRepositoy.saveAll(wishLists);
-				}
-
-				// Remove product from cart if it exists
-				if (cartItem != null) {
-					cartItemRepository.deleteById(cartItem.getId());
-				}
-
-				// Remove product images
-				productImageRepository.deleteAll(productImages);
-
-				// Remove product details
-				if (productDetail != null) {
-					productDetailRepository.deleteById(productDetail.getDetail_id());
-				}
-
-				// Delete the product
-				productRepository.deleteById(productId);
-
-				return ResponseEntity.ok("Sản phẩm đã được xóa thành công.");
-			} catch (Exception e) {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Xóa sản phẩm không thành công.");
+			if (product == null) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm.");
 			}
+
+			Product_detail productDetail = productDetailRepository.findByProduct(product);
+			List<Product_image> productImages = productImageRepository.findByProduct(product);
+			CartItem cartItem = cartItemRepository.findByProduct(product);
+			Set<WishList> wishLists = wishListRepositoy.findByProducts(product);
+
+			// Remove product from wishlists
+			if (wishLists != null) {
+				for (WishList wishList : wishLists) {
+					wishList.removeProduct(product);
+				}
+				wishListRepositoy.saveAll(wishLists);
+			}
+
+			// Remove product from cart if it exists
+			if (cartItem != null) {
+				cartItemRepository.deleteById(cartItem.getId());
+			}
+
+			// Remove product images
+			productImageRepository.deleteAll(productImages);
+
+			// Remove product details
+			if (productDetail != null) {
+				productDetailRepository.deleteById(productDetail.getDetail_id());
+			}
+
+			// Delete the product
+			productRepository.deleteById(productId);
+
+			return ResponseEntity.ok("Sản phẩm đã được xóa thành công.");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Xóa sản phẩm không thành công.");
 		}
-	
-	
-	//get product by id
+	}
+
+	// get product by id
 	@GetMapping("/{productId}")
 	public ResponseEntity<ProductDetailDTO> getProductDetailsById(@PathVariable Integer productId) {
 		Product product = productRepository.findById(productId).orElse(null);
@@ -215,6 +218,7 @@ public class ProductAdminController {
 
 		return productDTO;
 	}
-	
-	
+
+
+
 }

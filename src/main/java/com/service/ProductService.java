@@ -164,4 +164,9 @@ public class ProductService {
 		return productRepository.findById(productId).orElse(null);
 	}
 
+	
+	@Transactional
+	public void updateProductQuantity(Long orderId, int quantity) {
+		productRepository.updateProductQuantity(orderId, quantity);
+	}
 }

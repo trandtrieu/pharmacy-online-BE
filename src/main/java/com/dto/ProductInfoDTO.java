@@ -17,4 +17,5 @@ public class ProductInfoDTO {
     private String nameproduct;
     private int quantity;
     private BigDecimal price;
+    private Long product_id;
 }

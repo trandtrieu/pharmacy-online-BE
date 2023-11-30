@@ -4,6 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -55,14 +58,16 @@ public class PaymentController {
 	@Autowired
 	private OrderRepository orderRepository;
 
-	Date date = new Date();
-	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-	String formattedDate = dateFormat.format(date);
 
 	@PostMapping("/create_payment")
 	public ResponseEntity<?> createPayment(HttpServletRequest req, @RequestBody PaymentRequest paymentRequest)
-			throws UnsupportedEncodingException, JsonMappingException, JsonProcessingException {
-
+			throws UnsupportedEncodingException, JsonMappingException, JsonProcessingException, InterruptedException {
+		ZoneId vietnamZone = ZoneId.of("Asia/Ho_Chi_Minh");
+		LocalDateTime now = LocalDateTime.now();
+		ZonedDateTime nowInVietnam = now.atZone(vietnamZone);
+		Date date = Date.from(nowInVietnam.toInstant());
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		String formattedDate = dateFormat.format(date);
 		OrderInfo order = new OrderInfo();
 		order.setAccountId(paymentRequest.getAccountId());
 		order.setAddress(paymentRequest.getAddress());
@@ -72,18 +77,19 @@ public class PaymentController {
 		order.setNote(paymentRequest.getNote());
 		order.setPaymentMethod(paymentRequest.getPaymentMethod());
 		order.setPhone(paymentRequest.getPhone());
+		Thread.sleep(10);
 		order.setDate(formattedDate);
 		order.setStatus("Wait for confirmation");
 		List<ProductInfoDTO> productInfoDTOList = paymentRequest.getProducts();
 		System.out.println("Debug: ProductInfoDTOList - " + productInfoDTOList);
 		List<ProductInfo> productInfoList = new ArrayList<>();
-
+		
 		for (ProductInfoDTO productInfoDTO : productInfoDTOList) {
 			ProductInfo productInfo = new ProductInfo();
 			productInfo.setNameproduct(productInfoDTO.getNameproduct());
 			productInfo.setQuantity(productInfoDTO.getQuantity());
 			productInfo.setPrice(productInfoDTO.getPrice());
-
+			productInfo.setProduct_id(productInfoDTO.getProduct_id());
 			productInfo.setOrderInfo(order);
 			productInfoList.add(productInfo);
 		}

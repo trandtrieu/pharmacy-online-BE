@@ -259,6 +259,21 @@ public class CartService {
 		return totalCost.add(shippingCost);
 	}
 	
+	
+	public BigDecimal getTotalCostByAccountAndTypeShippingByPharmacy(Long accountId, int cartType) {
+		BigDecimal totalCost = getTotalCostByAccountAndType(accountId, cartType);
+
+		BigDecimal shippingCost = new BigDecimal("0");
+//		BigDecimal freeShippingThreshold = new BigDecimal("300000");
+//		BigDecimal shippingRate = new BigDecimal("30000");
+//
+//		if (totalCost.compareTo(freeShippingThreshold) < 0) {
+//			shippingCost = shippingRate;
+//		}
+
+		return totalCost.add(shippingCost);
+	}
+	
 	public DiscountCalculationResultDTO applyDiscountCodeToCart(BigDecimal totalCartCost, DiscountCode discountCode) {
 		DiscountCalculationResultDTO result = new DiscountCalculationResultDTO();
 		if (isDiscountCodeValid(discountCode)) {

@@ -104,7 +104,7 @@ public class OrderController {
 
 			List<ProductInfoDTO> productInfoDTOList = productInfoList.stream()
 					.map(productInfo -> new ProductInfoDTO(productInfo.getNameproduct(), productInfo.getQuantity(),
-							productInfo.getPrice()))
+							productInfo.getPrice(), productInfo.getProduct_id()))
 					.collect(Collectors.toList());
 
 			return ResponseEntity.status(HttpStatus.OK).body(productInfoDTOList);

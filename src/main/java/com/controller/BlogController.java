@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.BlogDTO;
 
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/pharmacy-online/blog/")
 public class BlogController {

@@ -41,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
 		accountDTO.setUsername(account.getUsername());
 		accountDTO.setDob(account.getDob());
 //        accountDTO.setPassword(account.getPassword());
-//        accountDTO.setAvatar(account.getAvatar());
+//        accountDTO.setAvatar("hello");
 		accountDTO.setPhone(account.getPhone());
 		accountDTO.setRoles(account.getRoles());
 

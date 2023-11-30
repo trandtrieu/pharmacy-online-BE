@@ -1,6 +1,7 @@
 package com.controller.admin;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +24,7 @@ import com.dto.ProductInfoDTO;
 import com.model.OrderInfo;
 import com.model.ProductInfo;
 import com.repository.OrderRepository;
+import com.service.ProductService;
 
 @CrossOrigin(origins = "http://localhost:3006")
 @RestController
@@ -30,18 +33,17 @@ public class OrderAdminController {
 
 	@Autowired
 	private OrderRepository orderRepository;
-
-	@GetMapping("/list1")
-	public ResponseEntity<List<OrderInfo>> listAllOrders() {
-		List<OrderInfo> orders = orderRepository.findAll();
-		return ResponseEntity.ok(orders);
-	}
-
+	@Autowired
+	private ProductService productService;
 	@GetMapping("/list")
 	public ResponseEntity<List<OrderInfoDTO>> listOrders() {
 		List<OrderInfo> orders = orderRepository.findAll();
 		List<OrderInfoDTO> orderDTOs = new ArrayList<>();
-
+		
+		  orders = orders.stream()
+		            .sorted(Comparator.comparing(OrderInfo::getId).reversed())
+		            .collect(Collectors.toList());
+		  
 		for (OrderInfo order : orders) {
 			OrderInfoDTO orderDTO = new OrderInfoDTO();
 			// Map fields from OrderInfo to OrderInfoDTO
@@ -95,7 +97,7 @@ public class OrderAdminController {
 
 			List<ProductInfoDTO> productInfoDTOList = productInfoList.stream()
 					.map(productInfo -> new ProductInfoDTO(productInfo.getNameproduct(), productInfo.getQuantity(),
-							productInfo.getPrice()))
+							productInfo.getPrice(), productInfo.getProduct_id()))
 					.collect(Collectors.toList());
 
 			return ResponseEntity.status(HttpStatus.OK).body(productInfoDTOList);
@@ -164,5 +166,26 @@ public class OrderAdminController {
 		}).collect(Collectors.toList());
 
 		return ResponseEntity.status(HttpStatus.OK).body(orderDTOs);
+	}
+	
+	@PutMapping("/updateQuantity/{orderId}")
+	public ResponseEntity<String> updateProductQuantity(@PathVariable Long orderId) {
+		try {
+			OrderInfo order = orderRepository.findById(orderId).orElse(null);
+			if (order != null) {
+				List<ProductInfo> products = order.getProducts();
+				for (ProductInfo productInfo : products) {
+					productService.updateProductQuantity(orderId, productInfo.getQuantity());
+
+				}
+
+				return ResponseEntity.ok("Đã cập nhật số lượng sản phẩm thành công.");
+			}
+			return ResponseEntity.ok("Odder Id khong ton tai.");
+
+		} catch (Exception e) {
+			System.out.println(e);
+			return ResponseEntity.badRequest().body("Lỗi khi cập nhật số lượng sản phẩm: " + e.getMessage());
+		}
 	}
 }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -69,5 +70,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	    @Param("minPrice") BigDecimal minPrice,
 	    @Param("maxPrice") BigDecimal maxPrice
 	);
-
+	
+	@Modifying
+	@Query("UPDATE Product p SET p.p_quantity = p.p_quantity - :quantity WHERE p.product_id IN (SELECT pi.product_id FROM ProductInfo pi WHERE pi.orderInfo.id = :orderId)")
+	void updateProductQuantity(@Param("orderId") Long orderId, @Param("quantity") int quantity);
 }

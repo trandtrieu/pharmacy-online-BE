@@ -31,6 +31,7 @@ public class ProductInfo implements Serializable {
 	private String nameproduct;
 	private int quantity;
     private BigDecimal price;
+    private Long product_id;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "order_id")
