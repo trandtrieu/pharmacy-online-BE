@@ -47,7 +47,7 @@ public class DiscountCode {
 	@Column
 	private Long condition;
 	
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany
 	@JoinTable(name = "discount_account", joinColumns = @JoinColumn(name = "discount_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
 	private Set<Account> accounts;
 	

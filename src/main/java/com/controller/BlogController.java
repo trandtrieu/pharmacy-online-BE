@@ -18,22 +18,19 @@ public class BlogController {
 
 	private final BlogDetailController blogDetailController;
 
-
-
 	public BlogController(BlogDetailController blogDetailController) {
 		this.blogDetailController = blogDetailController;
 	}
-
 
 	@PostMapping("/add")
 	public ResponseEntity<String> addBlog(@RequestBody BlogDTO blogDTO) {
 		blogDetailController.addBlog(blogDTO);
 		return ResponseEntity.ok("Blog đã thêm thành công");
 	}
-	
-	//update blog rest api
+
+	// update blog rest api
 	@PutMapping("/update/{blog_id}")
-	public ResponseEntity<?> updateBlog(@PathVariable Integer blog_id, @RequestBody BlogDTO blogDTO){
+	public ResponseEntity<?> updateBlog(@PathVariable Integer blog_id, @RequestBody BlogDTO blogDTO) {
 		blogDetailController.updateBlog(blog_id, blogDTO);
 		return ResponseEntity.ok("Update thành công");
 	}

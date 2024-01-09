@@ -87,6 +87,7 @@ public class DiscountCodeService {
         discountCode.setTimesUsable(discountCodeDTO.getTimesUsable());
         discountCode.setExpiryDate(discountCodeDTO.getExpiryDate());
         discountCode.setStatus(discountCodeDTO.getStatus());
+        discountCode.setCondition(discountCodeDTO.getCondition());
         discountCodeRepository.save(discountCode);
     }
 
